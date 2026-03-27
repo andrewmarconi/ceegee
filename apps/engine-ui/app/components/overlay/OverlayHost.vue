@@ -49,7 +49,8 @@ const moduleKeyById = computed(() => {
 });
 
 // Connect to WebSocket for live state
-const { channelState } = useEngineWs(props.workspaceId, props.channelId);
+const { channelState, subscribe: wsSubscribe } = useEngineWs();
+onMounted(() => wsSubscribe(props.workspaceId, props.channelId));
 
 // Filter layers based on scope
 const visibleLayers = computed<LayerState[]>(() => {
