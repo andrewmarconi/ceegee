@@ -7,8 +7,6 @@
     </template>
 
     <template #right>
-      <UColorModeButton />
-
       <UButton
         to="https://github.com/andrewmarconi/ceegee"
         target="_blank"
