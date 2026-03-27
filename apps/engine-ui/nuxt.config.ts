@@ -11,8 +11,10 @@ export default defineNuxtConfig({
 
   css: ['~/assets/css/main.css'],
 
-  routeRules: {
-    '/': { prerender: true }
+  nitro: {
+    experimental: {
+      websocket: true
+    }
   },
 
   compatibilityDate: '2025-01-15',
