@@ -19,14 +19,6 @@ defineProps<{
 
     <template #right>
       <slot name="actions" />
-      <UButton
-        to="https://github.com/andrewmarconi/ceegee"
-        target="_blank"
-        icon="i-simple-icons-github"
-        aria-label="GitHub"
-        color="neutral"
-        variant="ghost"
-      />
     </template>
   </UHeader>
 </template>
