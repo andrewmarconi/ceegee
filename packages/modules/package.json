@@ -1,0 +1,17 @@
+{
+  "name": "modules",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./registry": "./src/registry.ts"
+  },
+  "dependencies": {
+    "engine-core": "workspace:*",
+    "gsap": "^3.12.7"
+  },
+  "peerDependencies": {
+    "vue": "^3.5.0"
+  }
+}

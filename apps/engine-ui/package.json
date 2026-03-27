@@ -12,6 +12,8 @@
   },
   "dependencies": {
     "engine-core": "workspace:*",
+    "modules": "workspace:*",
+    "gsap": "^3.12.7",
     "@iconify-json/lucide": "^1.2.98",
     "@iconify-json/simple-icons": "^1.2.74",
     "@nuxt/ui": "^4.5.1",
