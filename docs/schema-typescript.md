@@ -138,9 +138,9 @@ export type ElementVisibility =
 
 export type ElementRuntimeState = {
   elementId: ElementId;
-  moduleId: ModulePk;
   visibility: ElementVisibility;
   runtimeData?: unknown;
+  updatedAt: IsoDateTime;
 };
 
 export type LayerState = {

@@ -419,9 +419,12 @@ Future dev:
 Proposed layout:
 
 - `apps/engine-ui/`
-  - Nuxt 4 app:
-    - `/app` – Operator/Producer/Assets UI.
-    - `/o` – Channel/Layer/Element overlay hosts.
+  - Nuxt 4 app (source root is `app/`):
+    - `app/pages/app/` – Operator/Producer/Assets UI.
+    - `app/pages/o/` – Channel/Layer/Element overlay hosts.
+    - `app/components/` – UI and overlay components.
+    - `app/composables/` – `useEngineApi()`, `useEngineWs()`, `useAssetUrl()`.
+    - `server/` – Nitro API routes + WebSocket handler.
   - Uses `engine-core` package for API client types and shared business logic.
 - `packages/engine-core/`
   - Core engine (pure Node/TS, framework‑agnostic):
@@ -476,11 +479,13 @@ Responsibilities:
 
 ### 11.3 Overlay rendering in Nuxt
 
-- Routes:
-  - `/o/[workspaceId]/channel/[channelId]`
-  - `/o/[workspaceId]/layer/[layerId]`
-  - `/o/[workspaceId]/element/[elementId]`
-- Each uses a shared `OverlayHost` component that:
+Nuxt 4 uses `app/` as the source root. All pages, components, and composables live under `app/`.
+
+- Routes (files under `app/pages/`):
+  - `app/pages/o/[workspaceId]/channel/[channelId].vue`
+  - `app/pages/o/[workspaceId]/layer/[layerId].vue`
+  - `app/pages/o/[workspaceId]/element/[elementId].vue`
+- Each uses a shared `OverlayHost` component (`app/components/overlay/OverlayHost.vue`) that:
   - Reads route params.
   - Calls engine API to resolve workspace/channel/layer/element metadata.
   - Connects to WS for state.
@@ -489,16 +494,16 @@ Responsibilities:
 
 ### 11.4 App UI in Nuxt
 
-- `pages/app/index.vue`:
+- `app/pages/app/index.vue`:
   - Workspace dashboard (list, select workspace).
-- `pages/app/[workspaceId]/operator.vue`:
+- `app/pages/app/[workspaceId]/operator.vue`:
   - Operator layout (Rundown, Layer dashboard, Context).
-- `pages/app/[workspaceId]/producer/index.vue`:
+- `app/pages/app/[workspaceId]/producer/index.vue`:
   - Channels/Layers/Elements management.
-- `pages/app/[workspaceId]/producer/assets.vue`:
+- `app/pages/app/[workspaceId]/producer/assets.vue`:
   - Asset library.
 
 All of these:
 
-- Use composables (e.g., `useEngineApi()`, `useEngineWs()`) for data access.
+- Use composables in `app/composables/` (e.g., `useEngineApi()`, `useEngineWs()`) for data access.
 - Render forms based on `ModuleManifest.configSchema`.
