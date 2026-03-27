@@ -153,6 +153,30 @@ export type UpsertModuleInput = {
   capabilities?: ModuleCapabilities;
 };
 
+// ModuleManifest is the runtime contract exported by each module package.
+// It mirrors UpsertModuleInput but uses `id` as the stable key.
+export type ModuleManifest = {
+  id: string;                  // stable key, e.g. "lower-third.basic"
+  label: string;
+  version: string;
+  category: ModuleCategory;
+  configSchema: JsonSchemaLike;
+  dataSchema: JsonSchemaLike;
+  actions: ModuleAction[];
+  animationHooks: ModuleAnimationHooks;
+  capabilities?: ModuleCapabilities;
+};
+
+// Props passed to every module's Vue component by OverlayHost
+export type ModuleComponentProps = {
+  workspace: Workspace;
+  channel: Channel;
+  layer: Layer;
+  element: Element;
+  config: unknown;
+  runtimeState: ElementRuntimeState;
+};
+
 // -- Element --
 
 export type Element = {
