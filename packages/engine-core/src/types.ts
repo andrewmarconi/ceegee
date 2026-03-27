@@ -228,6 +228,36 @@ export type SetRuntimeStateInput = {
   runtimeData?: unknown;
 };
 
+// -- Engine state (in-memory, built from DB) --
+
+export type LayerState = {
+  layerId: LayerId;
+  elements: ElementRuntimeState[];
+};
+
+export type ChannelState = {
+  workspaceId: WorkspaceId;
+  channelId: ChannelId;
+  layers: LayerState[];
+};
+
+// -- WebSocket events --
+
+export type EngineEvent =
+  | { type: 'state:init'; payload: ChannelState }
+  | { type: 'state:update'; payload: ChannelState }
+  | {
+      type: 'element:action';
+      payload: {
+        workspaceId: WorkspaceId;
+        channelId: ChannelId;
+        elementId: ElementId;
+        actionId: string;
+        args?: unknown;
+      };
+    }
+  | { type: 'telemetry'; payload: unknown };
+
 // -- Helpers --
 
 export function now(): IsoDateTime {
