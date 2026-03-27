@@ -189,20 +189,16 @@ async function handleReorderElements(elementIds: ElementId[]) {
 
 <template>
   <div class="flex flex-col h-full">
-    <div class="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-800">
-      <div>
-        <h1 class="text-lg font-semibold">Producer</h1>
-        <p class="text-sm text-gray-500">Manage channels, layers, and elements</p>
-      </div>
-      <div class="flex gap-2">
+    <AppHeader title="Producer" description="Manage channels, layers, and elements">
+      <template #actions>
         <NuxtLink :to="`/app/${workspaceId}/producer/assets`">
           <UButton label="Assets" icon="i-lucide-image" variant="outline" color="neutral" />
         </NuxtLink>
         <NuxtLink :to="`/app/${workspaceId}/operator`">
           <UButton label="Operator" icon="i-lucide-play" variant="outline" color="neutral" />
         </NuxtLink>
-      </div>
-    </div>
+      </template>
+    </AppHeader>
 
     <div class="flex flex-1 min-h-0">
       <div class="w-64 border-r border-gray-200 dark:border-gray-800 flex-shrink-0 overflow-hidden">

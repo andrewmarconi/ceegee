@@ -73,17 +73,13 @@ function handleViewUsage(id: AssetId) {
 
 <template>
   <div class="flex flex-col h-full">
-    <div class="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-800">
-      <div>
-        <h1 class="text-lg font-semibold">Assets</h1>
-        <p class="text-sm text-gray-500">Manage workspace images, logos, and graphics</p>
-      </div>
-      <div class="flex gap-2">
+    <AppHeader title="Assets" description="Manage workspace images, logos, and graphics">
+      <template #actions>
         <NuxtLink :to="`/app/${workspaceId}/producer`">
           <UButton label="Structure" icon="i-lucide-layers" variant="outline" color="neutral" />
         </NuxtLink>
-      </div>
-    </div>
+      </template>
+    </AppHeader>
 
     <div class="flex flex-1 min-h-0">
       <div class="w-48 border-r border-gray-200 dark:border-gray-800 flex-shrink-0 overflow-y-auto">

@@ -65,14 +65,14 @@ async function confirmDelete(id: WorkspaceId) {
 </script>
 
 <template>
-  <div class="max-w-4xl mx-auto px-4 py-8">
-    <div class="flex items-center justify-between mb-6">
-      <div>
-        <h1 class="text-2xl font-bold">Workspaces</h1>
-        <p class="text-sm text-gray-500 mt-1">Select a workspace to open its Operator or Producer view.</p>
-      </div>
-      <UButton label="New Workspace" icon="i-lucide-plus" @click="showCreateModal = true" />
-    </div>
+  <div>
+    <AppHeader title="Workspaces" description="Select a workspace to open its Operator or Producer view.">
+      <template #actions>
+        <UButton label="New Workspace" icon="i-lucide-plus" @click="showCreateModal = true" />
+      </template>
+    </AppHeader>
+
+    <div class="max-w-4xl mx-auto px-4 py-8">
 
     <div v-if="loading" class="flex items-center justify-center py-16">
       <UIcon name="i-lucide-loader-2" class="animate-spin text-gray-400 text-2xl" />
@@ -126,6 +126,8 @@ async function confirmDelete(id: WorkspaceId) {
           </NuxtLink>
         </div>
       </UCard>
+    </div>
+
     </div>
 
     <!-- Create Modal -->
