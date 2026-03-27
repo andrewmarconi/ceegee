@@ -5,13 +5,13 @@ import * as schema from './schema';
 
 export type AppDatabase = ReturnType<typeof drizzle<typeof schema>>;
 
-const MIGRATIONS_DIR = new URL('../../drizzle', import.meta.url).pathname;
+const DEFAULT_MIGRATIONS_DIR = new URL('../../drizzle', import.meta.url).pathname;
 
-export function createDatabase(dbPath: string): AppDatabase {
+export function createDatabase(dbPath: string, migrationsFolder?: string): AppDatabase {
   const sqlite = new Database(dbPath);
   sqlite.pragma('journal_mode = WAL');
   sqlite.pragma('foreign_keys = ON');
   const db = drizzle(sqlite, { schema });
-  migrate(db, { migrationsFolder: MIGRATIONS_DIR });
+  migrate(db, { migrationsFolder: migrationsFolder ?? DEFAULT_MIGRATIONS_DIR });
   return db;
 }
