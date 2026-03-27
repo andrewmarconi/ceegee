@@ -181,6 +181,7 @@ export function listChannels(db: AppDatabase, workspaceId: WorkspaceId): Channel
 }
 
 export function updateChannel(db: AppDatabase, id: ChannelId, input: UpdateChannelInput): Channel {
+  if (!getChannel(db, id)) throw new Error(`Channel ${id} not found`);
   const values: Record<string, unknown> = { updatedAt: now() };
   if (input.name !== undefined) values.name = input.name;
   if (input.description !== undefined) values.description = input.description;
@@ -239,6 +240,7 @@ export function listLayers(db: AppDatabase, channelId: ChannelId): Layer[] {
 }
 
 export function updateLayer(db: AppDatabase, id: LayerId, input: UpdateLayerInput): Layer {
+  if (!getLayer(db, id)) throw new Error(`Layer ${id} not found`);
   const values: Record<string, unknown> = { updatedAt: now() };
   if (input.name !== undefined) values.name = input.name;
   if (input.zIndex !== undefined) values.zIndex = input.zIndex;
@@ -383,6 +385,7 @@ export function listElementsByChannel(db: AppDatabase, channelId: ChannelId): El
 }
 
 export function updateElement(db: AppDatabase, id: ElementId, input: UpdateElementInput): Element {
+  if (!getElement(db, id)) throw new Error(`Element ${id} not found`);
   const values: Record<string, unknown> = { updatedAt: now() };
   if (input.name !== undefined) values.name = input.name;
   if (input.sortOrder !== undefined) values.sortOrder = input.sortOrder;
@@ -447,6 +450,7 @@ export function listAssets(db: AppDatabase, workspaceId: WorkspaceId): Asset[] {
 }
 
 export function updateAsset(db: AppDatabase, id: AssetId, input: UpdateAssetInput): Asset {
+  if (!getAsset(db, id)) throw new Error(`Asset ${id} not found`);
   const values: Record<string, unknown> = { updatedAt: now() };
   if (input.name !== undefined) values.name = input.name;
   if (input.tags !== undefined) values.tagsJson = JSON.stringify(input.tags);
