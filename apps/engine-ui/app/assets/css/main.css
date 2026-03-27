@@ -2,7 +2,9 @@
 @import "@nuxt/ui";
 
 @theme static {
-  --font-sans: 'Public Sans', sans-serif;
+  --font-sans: 'Atkinson Hyperlegible Next', sans-serif;
+  --font-mono: 'Atkinson Hyperlegible Mono', mono;
+  --font-serif: 'Prata', serif;
 
   --color-green-50: #EFFDF5;
   --color-green-100: #D9FBE8;
