@@ -56,15 +56,12 @@ function isLive(elementId: number): boolean {
     <div
       v-for="layer in visibleLayers"
       :key="layer.id"
-      class="rounded-lg border border-surface-700 overflow-hidden"
     >
-      <div class="px-3 py-1 bg-surface-800 border-b border-surface-700">
-        <h3 class="text-xs font-semibold text-surface-400 uppercase tracking-wide">
-          {{ layer.name }}
-        </h3>
-      </div>
+      <h3 class="text-xs font-medium text-surface-500 uppercase tracking-wide mb-2">
+        {{ layer.name }}
+      </h3>
 
-      <div class="p-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+      <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3">
         <div
           v-if="elementsForLayer(layer.id).length === 0"
           class="col-span-full text-sm text-surface-500 py-4 text-center"
