@@ -79,31 +79,37 @@ async function copyOverlayUrl() {
 </script>
 
 <template>
-  <div class="flex items-center gap-4 px-4 py-2 border-b border-surface-200 dark:border-surface-700 bg-surface-0 dark:bg-surface-900">
-    <div class="flex items-center gap-2">
-      <label class="text-sm font-medium text-surface-500 whitespace-nowrap">Workspace</label>
-      <Select
-        v-model="selectedWorkspaceValue"
-        :options="workspaceItems"
-        option-label="label"
-        option-value="value"
-        placeholder="Select workspace"
-        class="w-48"
-      />
-    </div>
+  <div class="flex items-center gap-3 px-4 py-2 border-b border-surface-700 bg-surface-900">
+    <NuxtLink
+      to="/app"
+      class="flex items-center gap-3"
+    >
+      <AppLogo class="w-auto h-6 shrink-0" />
+    </NuxtLink>
+    <span class="w-px h-5 bg-surface-600" />
+    <span class="text-sm font-semibold whitespace-nowrap">Operator</span>
+    <span class="text-surface-500">&#8250;</span>
 
-    <div class="flex items-center gap-2">
-      <label class="text-sm font-medium text-surface-500 whitespace-nowrap">Channel</label>
-      <Select
-        v-model="selectedChannelValue"
-        :options="channelItems"
-        option-label="label"
-        option-value="value"
-        :disabled="!selectedWorkspaceId"
-        placeholder="Select channel"
-        class="w-48"
-      />
-    </div>
+    <Select
+      v-model="selectedWorkspaceValue"
+      :options="workspaceItems"
+      option-label="label"
+      option-value="value"
+      placeholder="Workspace"
+      class="w-44"
+    />
+
+    <span class="text-surface-500">&#8250;</span>
+
+    <Select
+      v-model="selectedChannelValue"
+      :options="channelItems"
+      option-label="label"
+      option-value="value"
+      :disabled="!selectedWorkspaceId"
+      placeholder="Channel"
+      class="w-44"
+    />
 
     <div class="flex-1" />
 

@@ -9,8 +9,6 @@ const route = useRoute()
 const api = useEngineApi()
 const { channelState, status: wsStatus, subscribe, disconnect } = useEngineWs()
 
-// --- Workspace + Channel data ---
-
 const workspaces = ref<Workspace[]>([])
 const channels = ref<Channel[]>([])
 const layers = ref<Layer[]>([])
@@ -18,16 +16,12 @@ const elements = ref<Element[]>([])
 
 const selectedWorkspaceId = ref<number | null>(null)
 const selectedChannelId = ref<number | null>(null)
+const selectedLayerId = ref<number | null>(null)
+const editingElementId = ref<number | null>(null)
 
-// --- Selection state: per-layer selected element ---
-const selectedElements = reactive<Record<number, number | null>>({})
-
-// --- Selected element for context panel ---
-const selectedElementId = ref<number | null>(null)
-
-const selectedElement = computed(() => {
-  if (selectedElementId.value === null) return null
-  return elements.value.find(e => e.id === selectedElementId.value) ?? null
+const editingElement = computed(() => {
+  if (editingElementId.value === null) return null
+  return elements.value.find(e => e.id === editingElementId.value) ?? null
 })
 
 // --- Initialize from route param ---
@@ -69,10 +63,8 @@ watch(selectedWorkspaceId, async (wsId) => {
 // --- Watch channel changes: load layers + elements, subscribe WS ---
 
 watch(selectedChannelId, async (chId) => {
-  for (const key of Object.keys(selectedElements)) {
-    delete selectedElements[Number(key)]
-  }
-  selectedElementId.value = null
+  selectedLayerId.value = null
+  editingElementId.value = null
 
   if (!selectedWorkspaceId.value || !chId) {
     layers.value = []
@@ -95,37 +87,34 @@ watch(selectedChannelId, async (chId) => {
 
 // --- Event handlers ---
 
-function onSelectElement(layerId: number, elementId: number | null) {
-  selectedElements[layerId] = elementId
-  if (elementId !== null) {
-    selectedElementId.value = elementId
+function getElementVisibility(elementId: number) {
+  if (!channelState.value) return 'hidden'
+  for (const layer of channelState.value.layers) {
+    for (const el of layer.elements) {
+      if (el.elementId === elementId) return el.visibility
+    }
   }
+  return 'hidden'
 }
 
-function onRundownSelect(elementId: number) {
-  selectedElementId.value = elementId
-  const element = elements.value.find(e => e.id === elementId)
-  if (element) {
-    selectedElements[element.layerId] = elementId
-  }
-}
-
-async function onTake(_layerId: number, elementId: number) {
+async function onToggle(elementId: number) {
   if (!selectedWorkspaceId.value || !selectedChannelId.value) return
+  const vis = getElementVisibility(elementId)
+  const isLive = vis === 'visible' || vis === 'entering'
+
   try {
-    await api.takeElement(selectedWorkspaceId.value, selectedChannelId.value, elementId)
+    if (isLive) {
+      await api.clearElement(selectedWorkspaceId.value, selectedChannelId.value, elementId)
+    } else {
+      await api.takeElement(selectedWorkspaceId.value, selectedChannelId.value, elementId)
+    }
   } catch (err) {
-    console.error('Take failed:', err)
+    console.error('Toggle failed:', err)
   }
 }
 
-async function onClear(_layerId: number, elementId: number) {
-  if (!selectedWorkspaceId.value || !selectedChannelId.value) return
-  try {
-    await api.clearElement(selectedWorkspaceId.value, selectedChannelId.value, elementId)
-  } catch (err) {
-    console.error('Clear failed:', err)
-  }
+function onEdit(elementId: number) {
+  editingElementId.value = elementId
 }
 
 async function onUpdateElement(elementId: number, fields: { name?: string, config?: unknown }) {
@@ -148,7 +137,7 @@ async function onUpdateElement(elementId: number, fields: { name?: string, confi
 </script>
 
 <template>
-  <div class="h-screen flex flex-col bg-surface-50 dark:bg-surface-950">
+  <div class="h-screen flex flex-col bg-surface-950">
     <OperatorTopBar
       :workspaces="workspaces"
       :channels="channels"
@@ -161,33 +150,32 @@ async function onUpdateElement(elementId: number, fields: { name?: string, confi
     />
 
     <div class="flex-1 flex overflow-hidden">
-      <div class="w-72 border-r border-surface-200 dark:border-surface-700 bg-surface-0 dark:bg-surface-900 flex-shrink-0 overflow-hidden">
-        <OperatorRundown
-          :elements="elements"
+      <div class="w-56 border-r border-surface-700 bg-surface-900 shrink-0 overflow-hidden">
+        <OperatorLayerFilter
           :layers="layers"
           :channel-state="channelState"
-          :selected-element-id="selectedElementId"
-          @update:selected-element-id="onRundownSelect"
+          :selected-layer-id="selectedLayerId"
+          @update:selected-layer-id="selectedLayerId = $event"
         />
       </div>
 
-      <div class="flex-1 overflow-hidden bg-surface-50 dark:bg-surface-950">
-        <OperatorLayerDashboard
+      <div class="flex-1 overflow-hidden bg-surface-950">
+        <OperatorElementGrid
           :layers="layers"
           :elements="elements"
           :channel-state="channelState"
-          :selected-elements="selectedElements"
-          @select-element="onSelectElement"
-          @take="onTake"
-          @clear="onClear"
+          :selected-layer-id="selectedLayerId"
+          @toggle="onToggle"
+          @edit="onEdit"
         />
       </div>
 
-      <div class="w-80 border-l border-surface-200 dark:border-surface-700 bg-surface-0 dark:bg-surface-900 flex-shrink-0 overflow-hidden">
+      <div class="w-80 border-l border-surface-700 bg-surface-900 shrink-0 overflow-hidden">
         <OperatorContextPanel
-          :element="selectedElement"
+          :element="editingElement"
           :channel-state="channelState"
           :workspace-id="selectedWorkspaceId ?? 0"
+          :channel-id="selectedChannelId"
           @update-element="onUpdateElement"
         />
       </div>

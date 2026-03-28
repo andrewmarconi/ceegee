@@ -5,6 +5,7 @@ const props = defineProps<{
   element: Element | null
   channelState: ChannelState | null
   workspaceId: number
+  channelId: number | null
 }>()
 
 const emit = defineEmits<{
@@ -62,6 +63,11 @@ const stateSeverity = computed(() => {
   }
 })
 
+const channelPreviewUrl = computed(() => {
+  if (!props.workspaceId || !props.channelId) return ''
+  return `/o/${props.workspaceId}/channel/${props.channelId}`
+})
+
 const editableConfigFields = computed(() => {
   const fields: { key: string, label: string, multiline: boolean }[] = []
   for (const [key, value] of Object.entries(editConfig.value)) {
@@ -104,17 +110,33 @@ function saveChanges() {
   emit('update-element', props.element.id, updates)
   isDirty.value = false
 }
-
-const previewUrl = computed(() => {
-  if (!props.element) return ''
-  return `/o/${props.workspaceId}/element/${props.element.id}`
-})
 </script>
 
 <template>
   <div class="flex flex-col h-full">
-    <div class="px-3 py-2 border-b border-surface-200 dark:border-surface-700">
-      <h2 class="text-sm font-semibold text-surface-500 uppercase tracking-wide">
+    <div
+      v-if="channelPreviewUrl"
+      class="px-3 py-3 border-b border-surface-700"
+    >
+      <p class="text-xs text-surface-400 mb-2">
+        Channel Preview
+      </p>
+      <div
+        class="relative w-full bg-black rounded overflow-hidden"
+        style="aspect-ratio: 16/9;"
+      >
+        <iframe
+          :src="channelPreviewUrl"
+          class="absolute inset-0 w-full h-full border-0"
+          style="overflow: hidden;"
+          scrolling="no"
+          sandbox="allow-scripts allow-same-origin"
+        />
+      </div>
+    </div>
+
+    <div class="px-3 py-2 border-b border-surface-700">
+      <h2 class="text-sm font-semibold text-surface-400 uppercase tracking-wide">
         Context
       </h2>
     </div>
@@ -124,7 +146,7 @@ const previewUrl = computed(() => {
       class="flex-1 flex items-center justify-center p-4"
     >
       <p class="text-sm text-surface-400 text-center">
-        Select an element from the rundown or a layer to see details.
+        Click the pencil icon on an element to edit.
       </p>
     </div>
 
@@ -132,31 +154,15 @@ const previewUrl = computed(() => {
       v-else
       class="flex-1 overflow-y-auto"
     >
-      <div class="px-3 py-2 border-b border-surface-100 dark:border-surface-800 flex items-center justify-between">
+      <div class="px-3 py-2 border-b border-surface-800 flex items-center justify-between">
         <span class="text-sm font-medium">{{ element.name }}</span>
         <Tag :severity="stateSeverity">
           {{ stateLabel }}
         </Tag>
       </div>
 
-      <div class="px-3 py-3 border-b border-surface-100 dark:border-surface-800">
-        <p class="text-xs text-surface-500 mb-2">
-          Preview
-        </p>
-        <div
-          class="relative w-full bg-black rounded overflow-hidden"
-          style="aspect-ratio: 16/9;"
-        >
-          <iframe
-            :src="previewUrl"
-            class="absolute inset-0 w-full h-full border-0"
-            sandbox="allow-scripts allow-same-origin"
-          />
-        </div>
-      </div>
-
       <div class="px-3 py-3 space-y-3">
-        <p class="text-xs text-surface-500">
+        <p class="text-xs text-surface-400">
           Quick Edit
         </p>
 
