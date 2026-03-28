@@ -253,6 +253,7 @@ async function handleReorderElements(elementIds: ElementId[]) {
             :elements="elements"
             :modules="modules"
             :layer-id="selectedLayerId"
+            :workspace-id="workspaceId"
             :loading="loadingElements"
             @create="handleCreateElement"
             @update="handleUpdateElement"

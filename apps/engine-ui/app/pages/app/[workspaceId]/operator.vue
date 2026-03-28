@@ -19,6 +19,10 @@ const selectedChannelId = ref<number | null>(null)
 const selectedLayerId = ref<number | null>(null)
 const editingElementId = ref<number | null>(null)
 
+const selectedWorkspace = computed(() =>
+  workspaces.value.find(w => w.id === selectedWorkspaceId.value) ?? null
+)
+
 const editingElement = computed(() => {
   if (editingElementId.value === null) return null
   return elements.value.find(e => e.id === editingElementId.value) ?? null
@@ -176,6 +180,7 @@ async function onUpdateElement(elementId: number, fields: { name?: string, confi
           :channel-state="channelState"
           :workspace-id="selectedWorkspaceId ?? 0"
           :channel-id="selectedChannelId"
+          :display-config="selectedWorkspace?.displayConfig"
           @update-element="onUpdateElement"
         />
       </div>

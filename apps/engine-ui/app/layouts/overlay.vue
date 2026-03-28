@@ -13,8 +13,11 @@
   background: transparent;
 }
 
-:global(html.p-dark),
+:global(html),
 :global(body) {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
   background: transparent !important;
 }
 

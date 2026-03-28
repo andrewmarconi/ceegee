@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
-import type { Element, ElementId, ModuleRecord, LayerId } from 'engine-core'
+import type { Element, ElementId, ModuleRecord, LayerId, WorkspaceId } from 'engine-core'
 
 const props = defineProps<{
   elements: Element[]
   modules: ModuleRecord[]
   layerId: LayerId
+  workspaceId: WorkspaceId
   loading?: boolean
 }>()
 
@@ -159,6 +160,7 @@ function moveElement(index: number, direction: 'up' | 'down') {
         <ProducerElementForm
           :modules="modules"
           :layer-id="layerId"
+          :workspace-id="workspaceId"
           @submit="handleCreate"
           @cancel="showCreateModal = false"
         />
@@ -177,6 +179,7 @@ function moveElement(index: number, direction: 'up' | 'down') {
           :element="editingElement"
           :modules="modules"
           :layer-id="layerId"
+          :workspace-id="workspaceId"
           @submit="handleEdit"
           @cancel="editingElement = null"
         />

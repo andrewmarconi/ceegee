@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import type { Element, ChannelState, ElementVisibility } from 'engine-core'
+import type { Element, ChannelState, ElementVisibility, WorkspaceDisplayConfig } from 'engine-core'
 
 const props = defineProps<{
   element: Element | null
   channelState: ChannelState | null
   workspaceId: number
   channelId: number | null
+  displayConfig?: WorkspaceDisplayConfig | null
 }>()
 
 const emit = defineEmits<{
@@ -68,6 +69,35 @@ const channelPreviewUrl = computed(() => {
   return `/o/${props.workspaceId}/channel/${props.channelId}`
 })
 
+const previewContainer = ref<HTMLElement | null>(null)
+const containerWidth = ref(0)
+
+const outputWidth = computed(() => props.displayConfig?.baseWidth ?? 1920)
+const outputHeight = computed(() => props.displayConfig?.baseHeight ?? 1080)
+
+const previewScale = computed(() => {
+  if (!containerWidth.value) return 1
+  return containerWidth.value / outputWidth.value
+})
+
+let ro: ResizeObserver | null = null
+
+watch(previewContainer, (el, oldEl) => {
+  if (oldEl && ro) {
+    ro.unobserve(oldEl)
+  }
+  if (el) {
+    if (!ro) {
+      ro = new ResizeObserver((entries) => {
+        containerWidth.value = entries[0]?.contentRect.width ?? 0
+      })
+    }
+    ro.observe(el)
+  }
+})
+
+onUnmounted(() => ro?.disconnect())
+
 const editableConfigFields = computed(() => {
   const fields: { key: string, label: string, multiline: boolean }[] = []
   for (const [key, value] of Object.entries(editConfig.value)) {
@@ -122,13 +152,18 @@ function saveChanges() {
         Channel Preview
       </p>
       <div
+        ref="previewContainer"
         class="relative w-full bg-black rounded overflow-hidden"
-        style="aspect-ratio: 16/9;"
+        :style="{ aspectRatio: `${outputWidth} / ${outputHeight}` }"
       >
         <iframe
           :src="channelPreviewUrl"
-          class="absolute inset-0 w-full h-full border-0"
-          style="overflow: hidden;"
+          class="absolute border-0 origin-top-left"
+          :style="{
+            width: `${outputWidth}px`,
+            height: `${outputHeight}px`,
+            transform: `scale(${previewScale})`,
+          }"
           scrolling="no"
           sandbox="allow-scripts allow-same-origin"
         />

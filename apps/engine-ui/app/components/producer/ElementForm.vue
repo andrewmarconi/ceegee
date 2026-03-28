@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import type { Element, ModuleRecord, ModulePk, LayerId, JsonSchemaLike } from 'engine-core'
+import type { Element, ModuleRecord, ModulePk, LayerId, WorkspaceId, JsonSchemaLike } from 'engine-core'
 
 const props = defineProps<{
   element?: Element | null
   modules: ModuleRecord[]
   layerId: LayerId
+  workspaceId: WorkspaceId
 }>()
 
 const emit = defineEmits<{
@@ -109,6 +110,7 @@ function handleSubmit() {
       <ProducerConfigForm
         v-model="state.config"
         :schema="configSchema"
+        :workspace-id="workspaceId"
       />
     </fieldset>
 
