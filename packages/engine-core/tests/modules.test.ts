@@ -5,6 +5,7 @@ import {
   getModuleByKey,
   listModules,
   type UpsertModuleInput,
+  type ThemeTokenDef,
 } from '../src/index';
 
 const sampleModule: UpsertModuleInput = {
@@ -17,6 +18,10 @@ const sampleModule: UpsertModuleInput = {
   actions: [{ id: 'show', label: 'Show' }, { id: 'hide', label: 'Hide' }],
   animationHooks: { enter: 'slideUp', exit: 'slideDown' },
   capabilities: { supportsLayerRegions: true },
+  themeTokens: [
+    { key: '--lt-primary-color', label: 'Primary Color', type: 'text', default: '#ffffff' },
+    { key: '--lt-size', label: 'Size', type: 'dropdown', default: 'medium', options: ['small', 'medium', 'large'] },
+  ],
 };
 
 describe('modules repository', () => {
@@ -59,5 +64,29 @@ describe('modules repository', () => {
     upsertModule(db, { ...sampleModule, moduleKey: 'bug.basic', label: 'Bug', category: 'bug' });
     const all = listModules(db);
     expect(all).toHaveLength(2);
+  });
+
+  it('persists and retrieves themeTokens', () => {
+    const mod = upsertModule(db, sampleModule);
+    expect(mod.themeTokens).toHaveLength(2);
+    expect(mod.themeTokens[0]).toEqual({
+      key: '--lt-primary-color',
+      label: 'Primary Color',
+      type: 'text',
+      default: '#ffffff',
+    });
+    expect(mod.themeTokens[1]).toEqual({
+      key: '--lt-size',
+      label: 'Size',
+      type: 'dropdown',
+      default: 'medium',
+      options: ['small', 'medium', 'large'],
+    });
+  });
+
+  it('defaults themeTokens to empty array when not provided', () => {
+    const { themeTokens: _, ...inputWithout } = sampleModule;
+    const mod = upsertModule(db, inputWithout as UpsertModuleInput);
+    expect(mod.themeTokens).toEqual([]);
   });
 });

@@ -72,6 +72,7 @@ export const modules = sqliteTable('modules', {
   actionsJson: text('actions_json').notNull(),
   animationHooksJson: text('animation_hooks_json').notNull(),
   capabilitiesJson: text('capabilities_json').notNull().default('{}'),
+  themeTokensJson: text('theme_tokens_json').notNull().default('[]'),
 
   createdAt: text('created_at').notNull(),
   updatedAt: text('updated_at').notNull(),
