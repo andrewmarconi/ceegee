@@ -28,6 +28,7 @@ Replaces the Rundown component. Vertical list of selectable layer items.
 - Clicking a layer filters the center panel to show only that layer's elements.
 - Clicking "All Layers" shows all layers in the center (default state).
 - Selected item has a highlighted background.
+- If there is only one layer in the channel, then no need to also show "All Layers"
 
 ### Center Panel — Element Grid
 
