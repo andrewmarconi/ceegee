@@ -11,17 +11,19 @@
     "typecheck": "nuxt typecheck"
   },
   "dependencies": {
-    "engine-core": "workspace:*",
-    "modules": "workspace:*",
-    "gsap": "^3.12.7",
     "@iconify-json/lucide": "^1.2.98",
     "@iconify-json/simple-icons": "^1.2.74",
-    "@nuxt/ui": "^4.5.1",
+    "@iconify/vue": "^5.0.0",
+    "@primeuix/themes": "^2.0.3",
+    "engine-core": "workspace:*",
+    "gsap": "^3.12.7",
+    "modules": "workspace:*",
     "nuxt": "^4.4.2",
-    "tailwindcss": "^4.2.1"
+    "primevue": "^4.5.4"
   },
   "devDependencies": {
     "@nuxt/eslint": "^1.15.2",
+    "@primevue/nuxt-module": "^4.5.4",
     "eslint": "^10.0.3",
     "typescript": "^5.9.3",
     "vue-tsc": "^3.2.5"

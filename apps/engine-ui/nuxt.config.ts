@@ -1,33 +1,34 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-export default defineNuxtConfig({
-  modules: [
-    '@nuxt/eslint',
-    '@nuxt/ui'
-  ],
+import Aura from '@primeuix/themes/aura'
 
-  colorMode: {
-    preference: 'dark'
-  },
-  
+export default defineNuxtConfig({
+  modules: ['@nuxt/eslint', '@primevue/nuxt-module'],
   devtools: {
     enabled: true
   },
-
   css: ['~/assets/css/main.css'],
-
+  compatibilityDate: '2025-01-15',
   nitro: {
     experimental: {
       websocket: true
     }
   },
-
-  compatibilityDate: '2025-01-15',
-
+  debug: true,
   eslint: {
     config: {
       stylistic: {
         commaDangle: 'never',
         braceStyle: '1tbs'
+      }
+    }
+  },
+  primevue: {
+    options: {
+      theme: {
+        preset: Aura,
+        options: {
+          darkModeSelector: '.p-dark'
+        }
       }
     }
   }

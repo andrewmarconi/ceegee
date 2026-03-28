@@ -7,7 +7,8 @@ useHead({
     { rel: 'icon', href: '/favicon.ico' }
   ],
   htmlAttrs: {
-    lang: 'en'
+    lang: 'en',
+    class: 'p-dark'
   }
 })
 
@@ -26,9 +27,8 @@ useSeoMeta({
 </script>
 
 <template>
-  <UApp>
-    <NuxtLayout>
-      <NuxtPage />
-    </NuxtLayout>
-  </UApp>
+  <Toast />
+  <NuxtLayout>
+    <NuxtPage />
+  </NuxtLayout>
 </template>
