@@ -76,7 +76,7 @@ const visibleLayers = computed<LayerState[]>(() => {
   return layers;
 });
 
-// Resolve module component by key
+// Resolve module component by key (cache avoids re-creating async wrappers)
 const componentCache = new Map<string, ReturnType<typeof defineAsyncComponent>>();
 
 function getModuleComponent(moduleKey: string) {
@@ -89,11 +89,22 @@ function getModuleComponent(moduleKey: string) {
   return comp;
 }
 
-function elementModuleKey(elementId: number): string {
-  const el = elementMap.value.get(elementId);
-  if (!el) return '';
-  return moduleKeyById.value.get(el.moduleId) ?? '';
-}
+// Pre-resolve components in reactive context (not during render) to avoid
+// calling defineAsyncComponent from the template and the double-evaluation
+// that causes the null component-effect ('ce') crash.
+const resolvedComponents = computed(() => {
+  const map = new Map<number, ReturnType<typeof defineAsyncComponent>>();
+  for (const layerState of visibleLayers.value) {
+    for (const elState of layerState.elements) {
+      const el = elementMap.value.get(elState.elementId);
+      if (!el) continue;
+      const moduleKey = moduleKeyById.value.get(el.moduleId) ?? '';
+      const comp = getModuleComponent(moduleKey);
+      if (comp) map.set(elState.elementId, comp);
+    }
+  }
+  return map;
+});
 
 // Theme token injection
 const themeVars = computed(() => {
@@ -115,8 +126,8 @@ const themeVars = computed(() => {
       >
         <template v-for="elState in layerState.elements" :key="elState.elementId">
           <component
-            v-if="getModuleComponent(elementModuleKey(elState.elementId))"
-            :is="getModuleComponent(elementModuleKey(elState.elementId))"
+            v-if="resolvedComponents.get(elState.elementId)"
+            :is="resolvedComponents.get(elState.elementId)!"
             :workspace="workspace!"
             :channel="channel!"
             :layer="layerMap.get(layerState.layerId)!"

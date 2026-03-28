@@ -1,0 +1,1 @@
+ALTER TABLE `modules` ADD `theme_tokens_json` text DEFAULT '[]' NOT NULL;

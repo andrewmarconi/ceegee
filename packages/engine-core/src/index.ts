@@ -271,6 +271,7 @@ function moduleRowToDomain(row: ModuleRow): ModuleRecord {
     actions: JSON.parse(row.actionsJson),
     animationHooks: JSON.parse(row.animationHooksJson),
     capabilities: JSON.parse(row.capabilitiesJson),
+    themeTokens: JSON.parse(row.themeTokensJson),
     createdAt: row.createdAt,
     updatedAt: row.updatedAt,
   };
@@ -290,6 +291,7 @@ export function upsertModule(db: AppDatabase, input: UpsertModuleInput): ModuleR
       actionsJson: JSON.stringify(input.actions),
       animationHooksJson: JSON.stringify(input.animationHooks),
       capabilitiesJson: JSON.stringify(input.capabilities ?? {}),
+      themeTokensJson: JSON.stringify(input.themeTokens ?? []),
       updatedAt: ts,
     }).where(eq(modules.id, existing.id)).run();
     return moduleRowToDomain(db.select().from(modules).where(eq(modules.id, existing.id)).get()!);
@@ -305,6 +307,7 @@ export function upsertModule(db: AppDatabase, input: UpsertModuleInput): ModuleR
     actionsJson: JSON.stringify(input.actions),
     animationHooksJson: JSON.stringify(input.animationHooks),
     capabilitiesJson: JSON.stringify(input.capabilities ?? {}),
+    themeTokensJson: JSON.stringify(input.themeTokens ?? []),
     createdAt: ts,
     updatedAt: ts,
   }).returning().get();

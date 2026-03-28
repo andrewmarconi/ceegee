@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import type { JsonSchemaLike } from 'engine-core'
+import type { Asset, JsonSchemaLike, WorkspaceId } from 'engine-core'
 
 const props = defineProps<{
   schema: JsonSchemaLike
   modelValue: Record<string, unknown>
+  workspaceId: WorkspaceId
 }>()
 
 const emit = defineEmits<{
@@ -12,13 +13,33 @@ const emit = defineEmits<{
 
 type SchemaProperty = {
   key: string
-  type: string
+  type: string | string[]
   title: string
   description?: string
   enumValues?: string[]
   default?: unknown
   properties?: Record<string, unknown>
   required?: boolean
+}
+
+function isAssetRef(field: SchemaProperty): boolean {
+  const t = field.type
+  return Array.isArray(t)
+    && t.includes('integer')
+    && t.includes('null')
+}
+
+const { data: assets } = useFetch<Asset[]>(
+  () => `/api/workspaces/${props.workspaceId}/assets`
+)
+
+const imageAssets = computed(() =>
+  (assets.value ?? []).filter(a => a.mimeType.startsWith('image/'))
+)
+
+function getAssetValue(key: string): number | null {
+  const v = getValue(key)
+  return typeof v === 'number' ? v : null
 }
 
 const fields = computed<SchemaProperty[]>(() => {
@@ -156,6 +177,33 @@ function getBooleanValue(key: string): boolean {
           v-if="field.description"
           class="text-surface-500"
         >{{ field.description }}</small>
+      </div>
+
+      <div
+        v-else-if="isAssetRef(field)"
+        class="flex flex-col gap-1"
+      >
+        <label class="text-sm font-medium">
+          {{ field.title }}
+          <span
+            v-if="field.required"
+            class="text-red-500"
+          >*</span>
+        </label>
+        <small
+          v-if="field.description"
+          class="text-surface-500"
+        >{{ field.description }}</small>
+        <Select
+          :model-value="getAssetValue(field.key)"
+          :options="imageAssets"
+          option-label="name"
+          option-value="id"
+          placeholder="None"
+          show-clear
+          fluid
+          @update:model-value="setValue(field.key, $event ?? null)"
+        />
       </div>
 
       <div

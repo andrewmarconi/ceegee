@@ -118,6 +118,14 @@ export type ModuleCapabilities = {
   supportsMultipleInstancesPerLayer?: boolean;
 };
 
+export type ThemeTokenDef = {
+  key: string;
+  label: string;
+  type: 'text' | 'number' | 'dropdown';
+  default: string;
+  options?: string[];
+};
+
 export type ModuleCategory =
   | 'lower-third'
   | 'bug'
@@ -137,6 +145,7 @@ export type ModuleRecord = {
   actions: ModuleAction[];
   animationHooks: ModuleAnimationHooks;
   capabilities: ModuleCapabilities;
+  themeTokens: ThemeTokenDef[];
   createdAt: IsoDateTime;
   updatedAt: IsoDateTime;
 };
@@ -151,6 +160,7 @@ export type UpsertModuleInput = {
   actions: ModuleAction[];
   animationHooks: ModuleAnimationHooks;
   capabilities?: ModuleCapabilities;
+  themeTokens?: ThemeTokenDef[];
 };
 
 // ModuleManifest is the runtime contract exported by each module package.
@@ -165,6 +175,7 @@ export type ModuleManifest = {
   actions: ModuleAction[];
   animationHooks: ModuleAnimationHooks;
   capabilities?: ModuleCapabilities;
+  themeTokens?: ThemeTokenDef[];
 };
 
 // Props passed to every module's Vue component by OverlayHost

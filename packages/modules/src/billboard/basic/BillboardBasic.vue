@@ -7,11 +7,31 @@ type BillboardConfig = {
   headline: string;
   subline?: string;
   alignment: 'left' | 'center' | 'right';
+  bgColor?: string;
+  bgImageAssetId?: number | null;
+  bgImageFit?: 'cover' | 'contain' | 'fill';
 };
 
 const props = defineProps<ModuleComponentProps>();
 const config = computed(() => props.config as BillboardConfig);
 const rootEl = ref<HTMLElement | null>(null);
+
+const bgImageUrl = computed(() => {
+  if (!config.value.bgImageAssetId) return null;
+  return `/api/workspaces/${props.workspace.id}/assets/${config.value.bgImageAssetId}/file`;
+});
+
+const bgStyle = computed(() => {
+  const style: Record<string, string> = {};
+  if (bgImageUrl.value) {
+    style.backgroundImage = `url(${bgImageUrl.value})`;
+    style.backgroundSize = config.value.bgImageFit ?? 'cover';
+    style.backgroundPosition = 'center';
+    style.backgroundRepeat = 'no-repeat';
+  }
+  style.backgroundColor = config.value.bgColor ?? 'rgba(0,0,0,0.7)';
+  return style;
+});
 
 let enterTl: gsap.core.Timeline | null = null;
 let exitTl: gsap.core.Timeline | null = null;
@@ -45,7 +65,7 @@ watch(
 
 <template>
   <div ref="rootEl" class="bb-root" :data-alignment="config.alignment">
-    <div class="bb-background" />
+    <div class="bb-background" :style="bgStyle" />
     <div class="bb-content">
       <div class="bb-headline">{{ config.headline }}</div>
       <div v-if="config.subline" class="bb-subline">{{ config.subline }}</div>
@@ -56,18 +76,20 @@ watch(
 <style scoped>
 .bb-root {
   position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  min-width: 40vw; max-width: 80vw;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   pointer-events: none;
   opacity: 0;
+  overflow: hidden;
 }
-.bb-root[data-alignment='left'] { left: 10vw; transform: translateY(-50%); }
-.bb-root[data-alignment='right'] { left: auto; right: 10vw; transform: translateY(-50%); }
+.bb-root[data-alignment='left'] { justify-content: flex-start; }
+.bb-root[data-alignment='right'] { justify-content: flex-end; }
 .bb-background {
   position: absolute; inset: 0;
   border-radius: var(--bb-radius, 0.8rem);
-  background: var(--bb-bg, rgba(0,0,0,0.7));
+  overflow: hidden;
 }
 .bb-content {
   position: relative;
