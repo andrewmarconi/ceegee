@@ -58,13 +58,13 @@ function isLive(elementId: number): boolean {
       :key="layer.id"
       class="rounded-lg border border-surface-700 overflow-hidden"
     >
-      <div class="px-4 py-2 bg-surface-800 border-b border-surface-700">
-        <h3 class="text-sm font-semibold text-surface-300 uppercase tracking-wide">
+      <div class="px-3 py-1 bg-surface-800 border-b border-surface-700">
+        <h3 class="text-xs font-semibold text-surface-400 uppercase tracking-wide">
           {{ layer.name }}
         </h3>
       </div>
 
-      <div class="p-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+      <div class="p-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
         <div
           v-if="elementsForLayer(layer.id).length === 0"
           class="col-span-full text-sm text-surface-500 py-4 text-center"
@@ -81,7 +81,7 @@ function isLive(elementId: number): boolean {
             : 'bg-surface-800 border-surface-600 hover:border-surface-500'"
           @click="emit('toggle', element.id)"
         >
-          <span class="flex-1 px-3 py-2.5 text-sm font-medium text-left truncate">
+          <span class="flex-1 px-4 py-4 text-sm font-medium text-left truncate">
             {{ element.name }}
           </span>
 
@@ -94,7 +94,7 @@ function isLive(elementId: number): boolean {
           </button>
 
           <div
-            class="w-2 h-full min-h-[2.5rem] rounded-r-md flex-shrink-0"
+            class="w-2 h-full min-h-14 rounded-r-md shrink-0"
             :class="isLive(element.id) ? 'bg-red-500 animate-pulse' : 'bg-surface-600'"
           />
         </button>
