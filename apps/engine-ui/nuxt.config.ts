@@ -1,4 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import tailwindcss from '@tailwindcss/vite'
 import Aura from '@primeuix/themes/aura'
 
 export default defineNuxtConfig({
@@ -12,6 +13,9 @@ export default defineNuxtConfig({
     experimental: {
       websocket: true
     }
+  },
+  vite: {
+    plugins: [tailwindcss()]
   },
   debug: true,
   eslint: {

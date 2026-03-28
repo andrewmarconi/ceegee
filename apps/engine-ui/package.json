@@ -15,11 +15,13 @@
     "@iconify-json/simple-icons": "^1.2.74",
     "@iconify/vue": "^5.0.0",
     "@primeuix/themes": "^2.0.3",
+    "@tailwindcss/vite": "^4.2.2",
     "engine-core": "workspace:*",
     "gsap": "^3.12.7",
     "modules": "workspace:*",
     "nuxt": "^4.4.2",
-    "primevue": "^4.5.4"
+    "primevue": "^4.5.4",
+    "tailwindcss": "^4.2.2"
   },
   "devDependencies": {
     "@nuxt/eslint": "^1.15.2",
