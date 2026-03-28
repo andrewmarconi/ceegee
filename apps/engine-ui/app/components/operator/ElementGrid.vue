@@ -56,9 +56,9 @@ function isLive(elementId: number): boolean {
     <div
       v-for="layer in visibleLayers"
       :key="layer.id"
-      class="rounded-lg border border-surface-700 px-3 pb-3 pt-2"
+      class="rounded-lg border border-surface-700 p-3"
     >
-      <h3 class="text-xs font-medium text-surface-500 uppercase tracking-wide mb-2">
+      <h3 class="text-xs font-medium text-surface-500 uppercase tracking-wide mb-3">
         {{ layer.name }}
       </h3>
 
@@ -73,7 +73,7 @@ function isLive(elementId: number): boolean {
         <button
           v-for="element in elementsForLayer(layer.id)"
           :key="element.id"
-          class="relative flex items-center rounded-md border transition-colors group"
+          class="relative flex items-center rounded-md border overflow-hidden transition-colors group"
           :class="isLive(element.id)
             ? 'bg-surface-800 border-red-500/40 hover:border-red-500/70'
             : 'bg-surface-800 border-surface-600 hover:border-surface-500'"
@@ -92,7 +92,7 @@ function isLive(elementId: number): boolean {
           </button>
 
           <div
-            class="w-2 h-full min-h-14 rounded-r-md shrink-0"
+            class="absolute right-0 top-0 bottom-0 w-2"
             :class="isLive(element.id) ? 'bg-red-500 animate-pulse' : 'bg-surface-600'"
           />
         </button>
