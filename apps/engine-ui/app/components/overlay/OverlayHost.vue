@@ -24,7 +24,7 @@ const { data: channel } = await useFetch<Channel>(
 const { data: layerList } = await useFetch<Layer[]>(
   `/api/workspaces/${props.workspaceId}/channels/${props.channelId}/layers`
 );
-const { data: elementList } = await useFetch<Element[]>(
+const { data: elementList, refresh: refreshElements } = await useFetch<Element[]>(
   `/api/workspaces/${props.workspaceId}/channels/${props.channelId}/elements`
 );
 const { data: moduleList } = await useFetch<ModuleRecord[]>('/api/modules');
@@ -51,6 +51,11 @@ const moduleKeyById = computed(() => {
 // Connect to WebSocket for live state
 const { channelState, subscribe: wsSubscribe } = useEngineWs();
 onMounted(() => wsSubscribe(props.workspaceId, props.channelId));
+
+// Refetch elements when state updates (config may have changed)
+watch(channelState, () => {
+  refreshElements();
+});
 
 // Filter layers based on scope
 const visibleLayers = computed<LayerState[]>(() => {
