@@ -15,6 +15,7 @@ export default defineNitroPlugin(() => {
       actions: manifest.actions,
       animationHooks: manifest.animationHooks,
       capabilities: manifest.capabilities,
+      themeTokens: manifest.themeTokens,
     });
   }
 
