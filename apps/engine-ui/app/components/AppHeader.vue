@@ -1,24 +1,33 @@
 <script setup lang="ts">
 defineProps<{
-  title: string;
-  description?: string;
-}>();
+  title: string
+  description?: string
+}>()
 </script>
 
 <template>
-  <UHeader>
-    <template #left>
-      <NuxtLink to="/app" class="flex items-center gap-3">
-        <AppLogo class="w-auto h-6 shrink-0" />
-        <USeparator orientation="vertical" class="h-5" />
-        <span class="text-sm font-semibold">{{ title }}</span>
-      </NuxtLink>
-    </template>
+  <header class="flex items-center gap-3 px-4 py-2 border-b border-surface-200 dark:border-surface-700">
+    <NuxtLink
+      to="/app"
+      class="flex items-center gap-3"
+    >
+      <AppLogo class="w-auto h-6 shrink-0" />
+      <Divider
+        layout="vertical"
+        class="h-5 mx-0"
+      />
+      <span class="text-sm font-semibold">{{ title }}</span>
+    </NuxtLink>
 
-    <span v-if="description" class="text-sm text-muted hidden md:inline">{{ description }}</span>
+    <span
+      v-if="description"
+      class="text-sm text-surface-500 hidden md:inline"
+    >{{ description }}</span>
 
-    <template #right>
+    <div class="flex-1" />
+
+    <div class="flex items-center gap-2">
       <slot name="actions" />
-    </template>
-  </UHeader>
+    </div>
+  </header>
 </template>

@@ -1,35 +1,33 @@
 <template>
-  <UHeader>
-    <template #left>
+  <div class="min-h-screen flex flex-col">
+    <header class="flex items-center justify-between px-4 py-3 border-b border-surface-200 dark:border-surface-700">
       <NuxtLink to="/">
         <AppLogo class="w-auto h-6 shrink-0" />
       </NuxtLink>
-    </template>
 
-    <template #right>
-      <NuxtLink to="/app">
-        <UButton label="Launch App" trailing-icon="i-lucide-arrow-right" variant="outline" color="neutral" />
-      </NuxtLink>
-      <UButton
-        to="https://github.com/andrewmarconi/ceegee"
-        target="_blank"
-        icon="i-simple-icons-github"
-        aria-label="GitHub"
-        color="neutral"
-        variant="ghost"
-      />
-    </template>
-  </UHeader>
+      <div class="flex items-center gap-2">
+        <NuxtLink to="/app">
+          <Button
+            label="Launch App"
+            icon="pi pi-arrow-right"
+            icon-pos="right"
+            severity="secondary"
+            outlined
+          />
+        </NuxtLink>
+      </div>
+    </header>
 
-  <UMain>
-    <slot />
-  </UMain>
+    <main class="flex-1">
+      <slot />
+    </main>
 
-  <USeparator />
+    <Divider />
 
-  <UFooter>
-    <template #left>
-      <p class="text-sm text-muted">CeeGee &copy; {{ new Date().getFullYear() }}</p>
-    </template>
-  </UFooter>
+    <footer class="px-4 py-4">
+      <p class="text-sm text-surface-500">
+        CeeGee &copy; {{ new Date().getFullYear() }}
+      </p>
+    </footer>
+  </div>
 </template>
