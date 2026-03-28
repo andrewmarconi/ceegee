@@ -2,6 +2,7 @@
   "name": "ceegee",
   "private": true,
   "type": "module",
+  "packageManager": "pnpm@10.32.1",
   "scripts": {
     "dev": "pnpm --filter engine-ui dev",
     "build": "pnpm --filter engine-ui build",
