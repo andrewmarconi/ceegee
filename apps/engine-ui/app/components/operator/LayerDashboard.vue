@@ -79,66 +79,84 @@ function layerHasSelection(layerId: number): boolean {
 
 <template>
   <div class="flex flex-col h-full">
-    <div class="px-3 py-2 border-b border-gray-200 dark:border-gray-800">
-      <h2 class="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">Layers</h2>
+    <div class="px-3 py-2 border-b border-surface-200 dark:border-surface-700">
+      <h2 class="text-sm font-semibold text-surface-500 uppercase tracking-wide">
+        Layers
+      </h2>
     </div>
 
     <div class="flex-1 overflow-y-auto p-3 space-y-3">
-      <div v-if="sortedLayers.length === 0" class="text-sm text-gray-400 text-center py-8">
+      <div
+        v-if="sortedLayers.length === 0"
+        class="text-sm text-surface-400 text-center py-8"
+      >
         No layers in this channel.
       </div>
 
-      <UCard
+      <Card
         v-for="layer in sortedLayers"
         :key="layer.id"
         :class="{ 'ring-2 ring-red-500/50': layerHasLive(layer.id) }"
       >
-        <template #header>
+        <template #title>
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-2">
               <span class="text-sm font-semibold">{{ layer.name }}</span>
-              <UBadge color="neutral" variant="subtle" size="sm">z{{ layer.zIndex }}</UBadge>
+              <Tag
+                severity="secondary"
+                class="text-xs"
+              >
+                z{{ layer.zIndex }}
+              </Tag>
             </div>
-            <div v-if="layerHasLive(layer.id)" class="flex items-center gap-1.5">
+            <div
+              v-if="layerHasLive(layer.id)"
+              class="flex items-center gap-1.5"
+            >
               <span class="size-2 rounded-full bg-red-500 animate-pulse" />
               <span class="text-xs font-medium text-red-600 dark:text-red-400">
                 {{ liveElementForLayer(layer.id)?.name }}
               </span>
             </div>
-            <span v-else class="text-xs text-gray-400">No element live</span>
+            <span
+              v-else
+              class="text-xs text-surface-400"
+            >No element live</span>
           </div>
         </template>
 
-        <div class="flex items-center gap-3">
-          <div class="flex-1">
-            <USelectMenu
-              :model-value="getSelectedValue(layer.id)"
-              :items="selectMenuItems(layer.id)"
-              placeholder="Select element..."
-              class="w-full"
-              @update:model-value="(val: string) => onSelectElement(layer.id, val)"
+        <template #content>
+          <div class="flex items-center gap-3">
+            <div class="flex-1">
+              <Select
+                :model-value="getSelectedValue(layer.id)"
+                :options="selectMenuItems(layer.id)"
+                option-label="label"
+                option-value="value"
+                placeholder="Select element..."
+                fluid
+                @update:model-value="(val: string) => onSelectElement(layer.id, val)"
+              />
+            </div>
+
+            <Button
+              label="TAKE"
+              :disabled="!layerHasSelection(layer.id)"
+              class="font-bold"
+              @click="onTake(layer.id)"
+            />
+
+            <Button
+              label="CLEAR"
+              severity="danger"
+              outlined
+              :disabled="!layerHasLive(layer.id)"
+              class="font-bold"
+              @click="onClear(layer.id)"
             />
           </div>
-
-          <UButton
-            label="TAKE"
-            color="primary"
-            variant="solid"
-            :disabled="!layerHasSelection(layer.id)"
-            class="font-bold"
-            @click="onTake(layer.id)"
-          />
-
-          <UButton
-            label="CLEAR"
-            color="error"
-            variant="outline"
-            :disabled="!layerHasLive(layer.id)"
-            class="font-bold"
-            @click="onClear(layer.id)"
-          />
-        </div>
-      </UCard>
+        </template>
+      </Card>
     </div>
   </div>
 </template>

@@ -45,12 +45,12 @@ const isOnAir = computed(() => {
   )
 })
 
-const wsStatusColor = computed(() => {
+const wsStatusSeverity = computed(() => {
   switch (props.wsStatus) {
-    case 'connected': return 'success'
-    case 'connecting': return 'warning'
-    case 'disconnected': return 'error'
-    default: return 'neutral'
+    case 'connected': return 'success' as const
+    case 'connecting': return 'warn' as const
+    case 'disconnected': return 'danger' as const
+    default: return 'secondary' as const
   }
 })
 
@@ -65,22 +65,26 @@ const wsStatusLabel = computed(() => {
 </script>
 
 <template>
-  <div class="flex items-center gap-4 px-4 py-2 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+  <div class="flex items-center gap-4 px-4 py-2 border-b border-surface-200 dark:border-surface-700 bg-surface-0 dark:bg-surface-900">
     <div class="flex items-center gap-2">
-      <label class="text-sm font-medium text-gray-500 dark:text-gray-400 whitespace-nowrap">Workspace</label>
-      <USelect
+      <label class="text-sm font-medium text-surface-500 whitespace-nowrap">Workspace</label>
+      <Select
         v-model="selectedWorkspaceValue"
-        :items="workspaceItems"
+        :options="workspaceItems"
+        option-label="label"
+        option-value="value"
         placeholder="Select workspace"
         class="w-48"
       />
     </div>
 
     <div class="flex items-center gap-2">
-      <label class="text-sm font-medium text-gray-500 dark:text-gray-400 whitespace-nowrap">Channel</label>
-      <USelect
+      <label class="text-sm font-medium text-surface-500 whitespace-nowrap">Channel</label>
+      <Select
         v-model="selectedChannelValue"
-        :items="channelItems"
+        :options="channelItems"
+        option-label="label"
+        option-value="value"
         :disabled="!selectedWorkspaceId"
         placeholder="Select channel"
         class="w-48"
@@ -89,7 +93,10 @@ const wsStatusLabel = computed(() => {
 
     <div class="flex-1" />
 
-    <UBadge :color="wsStatusColor" variant="subtle" class="gap-1.5">
+    <Tag
+      :severity="wsStatusSeverity"
+      class="gap-1.5"
+    >
       <span
         class="size-2 rounded-full"
         :class="{
@@ -99,23 +106,21 @@ const wsStatusLabel = computed(() => {
         }"
       />
       {{ wsStatusLabel }}
-    </UBadge>
+    </Tag>
 
-    <UBadge
+    <Tag
       v-if="isOnAir"
-      color="error"
-      variant="solid"
+      severity="danger"
       class="uppercase font-bold tracking-wider animate-pulse"
     >
       On Air
-    </UBadge>
-    <UBadge
+    </Tag>
+    <Tag
       v-else
-      color="neutral"
-      variant="outline"
+      severity="secondary"
       class="uppercase font-bold tracking-wider"
     >
       Off Air
-    </UBadge>
+    </Tag>
   </div>
 </template>

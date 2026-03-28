@@ -36,11 +36,11 @@ function getStatusLabel(visibility: ElementVisibility): string {
   }
 }
 
-function getStatusColor(visibility: ElementVisibility): 'success' | 'error' | 'warning' | 'neutral' {
+function getStatusSeverity(visibility: ElementVisibility): 'success' | 'danger' | 'warn' | 'secondary' {
   switch (visibility) {
-    case 'visible': case 'entering': return 'error'
-    case 'exiting': return 'warning'
-    default: return 'neutral'
+    case 'visible': case 'entering': return 'danger'
+    case 'exiting': return 'warn'
+    default: return 'secondary'
   }
 }
 
@@ -51,39 +51,45 @@ const sortedElements = computed(() =>
 
 <template>
   <div class="flex flex-col h-full">
-    <div class="px-3 py-2 border-b border-gray-200 dark:border-gray-800">
-      <h2 class="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">Rundown</h2>
+    <div class="px-3 py-2 border-b border-surface-200 dark:border-surface-700">
+      <h2 class="text-sm font-semibold text-surface-500 uppercase tracking-wide">
+        Rundown
+      </h2>
     </div>
 
     <div class="flex-1 overflow-y-auto">
-      <div v-if="sortedElements.length === 0" class="p-4 text-sm text-gray-400 text-center">
+      <div
+        v-if="sortedElements.length === 0"
+        class="p-4 text-sm text-surface-400 text-center"
+      >
         No elements in this channel.
       </div>
 
       <button
         v-for="element in sortedElements"
         :key="element.id"
-        class="w-full text-left px-3 py-2.5 border-b border-gray-100 dark:border-gray-800 transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/50 focus:outline-none"
+        class="w-full text-left px-3 py-2.5 border-b border-surface-100 dark:border-surface-800 transition-colors hover:bg-surface-50 dark:hover:bg-surface-800/50 focus:outline-none"
         :class="{
-          'bg-blue-50 dark:bg-blue-900/20 border-l-2 border-l-blue-500': selectedElementId === element.id,
+          'bg-primary-50 dark:bg-primary-900/20 border-l-2 border-l-primary-500': selectedElementId === element.id,
           'border-l-2 border-l-transparent': selectedElementId !== element.id
         }"
         @click="emit('update:selectedElementId', element.id)"
       >
         <div class="flex items-center justify-between gap-2">
           <div class="min-w-0 flex-1">
-            <p class="text-sm font-medium truncate">{{ element.name }}</p>
-            <p class="text-xs text-gray-500 dark:text-gray-400 truncate">
+            <p class="text-sm font-medium truncate">
+              {{ element.name }}
+            </p>
+            <p class="text-xs text-surface-500 truncate">
               {{ layerMap.get(element.layerId)?.name ?? 'Unknown layer' }}
             </p>
           </div>
-          <UBadge
-            :color="getStatusColor(getElementVisibility(element.id))"
-            variant="subtle"
-            size="sm"
+          <Tag
+            :severity="getStatusSeverity(getElementVisibility(element.id))"
+            class="text-xs"
           >
             {{ getStatusLabel(getElementVisibility(element.id)) }}
-          </UBadge>
+          </Tag>
         </div>
       </button>
     </div>
