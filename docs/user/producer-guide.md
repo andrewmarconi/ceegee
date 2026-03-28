@@ -1,0 +1,111 @@
+# Producer Guide
+
+The Producer UI is where you build and configure your show structure. Access it at `/app/<workspaceId>/producer`.
+
+## Overview
+
+The Producer view lets you:
+
+- Create and manage **channels** (output buses).
+- Create and manage **layers** (z-index groups) within channels.
+- Create and manage **elements** (graphic instances) within layers.
+- Configure element content and visual settings.
+- Upload and manage **assets** (images, logos).
+
+## Managing channels
+
+Channels are the top-level organizer within a workspace. Each channel is an independent output.
+
+### Create a channel
+
+1. Click **Add Channel**.
+2. Enter a name (e.g., "Main Program") and optional description.
+3. Click **Create**.
+
+### Edit or delete a channel
+
+Use the edit and delete buttons on each channel card. Deleting a channel also deletes all its layers and elements.
+
+## Managing layers
+
+Layers belong to a channel and control z-index stacking. Elements on higher z-index layers appear in front.
+
+### Create a layer
+
+1. Select a channel.
+2. Click **Add Layer**.
+3. Enter a name (e.g., "Lower Thirds").
+4. Set the **z-index** (e.g., 10, 20, 30). Higher values stack in front.
+5. Optionally set a **region** to hint at screen position:
+   - `band-lower` -- bottom band (lower thirds)
+   - `band-upper` -- top band
+   - `corner-tl`, `corner-tr`, `corner-bl`, `corner-br` -- corners (bugs)
+   - `full` -- full frame (billboards)
+6. Click **Create**.
+
+### Layer planning
+
+Plan your layer structure before building. A typical setup:
+
+| Layer | Z-index | Use |
+|-------|---------|-----|
+| Bugs | 30 | Corner logos, always-on marks |
+| Lower Thirds | 20 | Name straps, titles |
+| Full Screen | 10 | Billboards, sponsor displays |
+
+The z-index determines visual stacking -- if two layers overlap, the higher z-index layer is in front.
+
+## Managing elements
+
+Elements are the individual graphics you create from module templates.
+
+### Create an element
+
+1. Select a channel, then a layer.
+2. Click **Add Element**.
+3. Enter a name (e.g., "Speaker: Andrew"). This name appears in the operator rundown.
+4. Select a **module** (e.g., "Basic Lower Third").
+5. Fill in the **configuration fields**. These are generated from the module's config schema and vary by module type. For a lower third, you might fill in:
+   - Primary text: "Andrew Smith"
+   - Secondary text: "Creative Director"
+   - Alignment: Left
+   - Variant: Solid
+6. Click **Create**.
+
+### Edit an element
+
+Click edit on any element to change its name, configuration, or module assignment. Changes take effect the next time the element is taken live.
+
+### Reorder elements
+
+Elements have a sort order that controls their position in the operator's rundown. Drag elements to reorder them within a layer.
+
+## Managing assets
+
+Access the asset library at `/app/<workspaceId>/producer/assets`.
+
+### Upload assets
+
+1. Click **Upload**.
+2. Select one or more image files (PNG, JPG, SVG).
+3. Files are validated for type and size before upload.
+
+### Organize assets
+
+- Use **virtual folders** to group assets (e.g., "Logos", "Backgrounds").
+- Add **tags** for additional categorization.
+
+### Using assets in elements
+
+Some modules support asset references (e.g., the lower third module has a `logoAssetId` field). When configuring an element, you can select an asset from your library to display.
+
+### Asset usage
+
+The asset library shows a usage indicator for each asset -- click it to see which elements reference that asset. This helps you avoid deleting assets that are in use.
+
+## Tips
+
+- **Name elements descriptively**: Operators need to quickly identify the right graphic in a list. "Speaker: Andrew Smith" is better than "Lower Third 1".
+- **Plan your layers**: Decide on a z-index scheme before building. It's easier to set up layers once than to restructure later.
+- **Use theme tokens**: Configure workspace theme tokens (CSS variables) to maintain consistent styling across all your graphics.
+- **Test in the overlay**: Open the overlay URL (`/o/<workspaceId>/channel/<channelId>`) in a browser tab alongside the producer to preview how your graphics look.

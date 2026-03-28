@@ -1,0 +1,109 @@
+# Operator Guide
+
+The Operator UI is the live control surface for your show. Access it at `/app/<workspaceId>/operator`.
+
+## Overview
+
+The Operator view lets you:
+
+- Select a workspace and channel.
+- See all elements organized by layer.
+- **Take** elements live (bring on screen with enter animation).
+- **Clear** elements (remove from screen with exit animation).
+- Trigger module-specific **actions** (e.g., start/stop a countdown, emphasize a lower third).
+- Make quick edits to element content before taking live.
+- Monitor connection status and what is currently on air.
+
+## Layout
+
+### Top bar
+
+- **Workspace selector**: Switch between workspaces.
+- **Channel selector**: Switch between channels within the workspace.
+- **Connection status**: Shows whether the WebSocket connection to the engine is active.
+- **On Air indicator**: Lit when any element is currently visible on the selected channel.
+
+### Element grid
+
+The main area displays all elements for the selected channel, organized by layer. Each element card shows:
+
+- Element name
+- Module type
+- Current visibility status
+
+### Layer filter
+
+Filter the element grid to show only elements on a specific layer, or view all layers at once.
+
+### Context panel
+
+When you select an element, the context panel shows:
+
+- Element details (name, module type, layer).
+- Quick-edit fields for common config values (e.g., name/title text).
+- Visual state indicator (ready, pending, live).
+
+## Core workflow
+
+### Taking an element live
+
+1. Find the element in the grid.
+2. Click **Take**.
+
+What happens:
+- If another element on the same layer is currently visible, it is automatically cleared first (exit animation plays).
+- The selected element enters the screen (enter animation plays).
+- The element's status changes to **visible**.
+
+### Clearing an element
+
+1. Find the live element (marked as visible/on-air).
+2. Click **Clear**.
+
+The element plays its exit animation and returns to **hidden** status.
+
+### Quick editing
+
+You can edit element content directly from the Operator view without switching to the Producer:
+
+1. Select an element in the grid.
+2. Edit fields in the context panel (e.g., change the name text on a lower third).
+3. The changes are saved immediately.
+4. Take the element live to see the updated content.
+
+Note: Edits are saved to the element's config but are not reflected on screen until the next take. If the element is currently live, you need to clear and re-take it to show the changes.
+
+## Element states
+
+| State | Visual | Meaning |
+|-------|--------|---------|
+| Hidden | Dimmed | Not on screen, ready to take |
+| Entering | Pulsing | Currently animating onto screen |
+| Visible | Highlighted / On Air | Fully on screen |
+| Exiting | Fading | Currently animating off screen |
+
+## Module actions
+
+Some modules have additional actions beyond show/hide:
+
+| Module | Actions | Description |
+|--------|---------|-------------|
+| Lower Third | Emphasize | Brief attention-grabbing animation |
+| Countdown | Start, Stop, Reset | Control the countdown timer |
+
+Trigger actions using the action buttons on the element card or in the context panel.
+
+## Real-time sync
+
+The Operator UI maintains a live WebSocket connection to the engine. State updates are pushed in real time:
+
+- If another operator takes or clears an element, you see the change immediately.
+- If you lose connection, the status indicator turns red. The client auto-reconnects.
+- On reconnect, the full channel state is re-synced.
+
+## Tips
+
+- **One live element per layer**: Taking an element automatically clears any other live element on the same layer. Plan your layers so that mutually exclusive graphics share a layer.
+- **Use descriptive names**: Work with your producer to ensure elements have clear names. During a live show you need to find the right graphic fast.
+- **Monitor the On Air indicator**: A quick glance at the top bar tells you whether anything is live.
+- **Test before going live**: Use the overlay URL in a browser tab to verify graphics look correct before connecting to OBS.

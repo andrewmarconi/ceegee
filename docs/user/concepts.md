@@ -1,0 +1,118 @@
+# Core Concepts
+
+CeeGee organizes broadcast graphics into a hierarchy of workspaces, channels, layers, elements, and modules. Understanding how these relate is key to building and controlling your show.
+
+## Workspace
+
+A **workspace** is the top-level container for a project or show. Everything -- channels, layers, elements, assets -- belongs to a workspace.
+
+Each workspace defines:
+
+- **Display configuration**: Base resolution (default 1920x1080), aspect ratio (default 16:9), and safe areas.
+- **Theme tokens**: CSS variables that control the visual style of overlays (colors, fonts, spacing). All module components within the workspace inherit these tokens.
+
+You can have multiple workspaces for different shows or projects.
+
+## Channel
+
+A **channel** is a logical output bus within a workspace. Think of it as a separate video output.
+
+Common setups:
+
+- **Single channel**: One channel called "Main Program" feeding a single OBS Browser Source.
+- **Multi-channel**: Separate channels for different outputs (e.g., "Main Program", "Backup", "Social Media Feed").
+
+Each channel has its own independent state -- taking a graphic live on one channel does not affect another.
+
+## Layer
+
+A **layer** groups elements at a specific z-index (visual stacking order). Layers within a channel stack on top of each other -- higher z-index layers appear in front.
+
+Each layer has:
+
+- **Name**: Descriptive label (e.g., "Lower Thirds", "Bugs", "Full Screen").
+- **Z-index**: Stacking order. A layer at z-index 20 appears above z-index 10.
+- **Region** (optional): Layout hint for where on screen this layer appears (e.g., `band-lower`, `corner-tr`, `full`).
+
+Typical layer setup:
+
+| Layer | Z-index | Region | Purpose |
+|-------|---------|--------|---------|
+| Bugs | 30 | corner-tr | Corner logos and brand marks |
+| Lower Thirds | 20 | band-lower | Name straps and titles |
+| Full Screen | 10 | full | Full-frame graphics and billboards |
+
+When you **take** an element on a layer, any other visible element on that same layer is automatically hidden first. This ensures only one graphic is live per layer.
+
+## Element
+
+An **element** is a specific instance of a module placed on a layer. It's the actual graphic you take live.
+
+Each element has:
+
+- **Name**: What you see in the rundown (e.g., "Speaker: Andrew", "Sponsor Logo").
+- **Module**: Which graphics template it uses (e.g., Basic Lower Third, Clock).
+- **Configuration**: The content and visual settings for this instance (e.g., name text, alignment, variant style).
+- **Sort order**: Position in the rundown list.
+
+Elements exist in one of four visibility states:
+
+| State | Meaning |
+|-------|---------|
+| `hidden` | Not on screen |
+| `entering` | Animating onto screen |
+| `visible` | Fully on screen |
+| `exiting` | Animating off screen |
+
+## Module
+
+A **module** is a graphics template type -- the blueprint that elements are created from.
+
+CeeGee ships with five built-in modules:
+
+| Module | Description |
+|--------|-------------|
+| Basic Lower Third | Name strap with primary/secondary/tertiary text lines |
+| Basic Bug | Corner logo or brand mark |
+| Basic Billboard | Full-width text display |
+| Basic Clock | Real-time clock |
+| Basic Countdown | Countdown timer with start/stop/reset |
+
+Each module defines:
+
+- **Config schema**: What fields you fill in when creating an element (text, colors, options).
+- **Actions**: Controls like show, hide, emphasize, start, stop, reset.
+- **Animations**: How the graphic enters, exits, and emphasizes (powered by GSAP).
+
+See [Modules Reference](modules-reference.md) for details on each built-in module.
+
+## Asset
+
+An **asset** is a media file (image, SVG, logo) uploaded to a workspace. Assets can be referenced by elements -- for example, a lower third can display a logo by referencing an asset ID.
+
+Assets are organized with:
+
+- **Virtual folders**: Group assets by category (e.g., "Logos/ClientA").
+- **Tags**: Label assets for easy filtering.
+
+## How it all fits together
+
+```
+Workspace
+├── Theme tokens (CSS variables for all overlays)
+├── Assets (logos, images)
+├── Channel: "Main Program"
+│   ├── Layer: "Bugs" (z-index 30)
+│   │   └── Element: "Network Logo" (bug module)
+│   ├── Layer: "Lower Thirds" (z-index 20)
+│   │   ├── Element: "Speaker: Andrew" (lower-third module)
+│   │   ├── Element: "Speaker: Sarah" (lower-third module)
+│   │   └── Element: "Coming Up Next" (lower-third module)
+│   └── Layer: "Full Screen" (z-index 10)
+│       └── Element: "Sponsor Billboard" (billboard module)
+└── Channel: "Social Feed"
+    └── Layer: "Clocks" (z-index 10)
+        └── Element: "Event Timer" (countdown module)
+```
+
+Each channel feeds a separate overlay URL that you point an OBS Browser Source at. The operator controls what is live on each channel independently.

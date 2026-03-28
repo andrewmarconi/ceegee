@@ -1,0 +1,77 @@
+# Getting Started
+
+This guide walks you through installing CeeGee, running it for the first time, and creating your first workspace.
+
+## Requirements
+
+- **Node.js** v20 or later
+- **pnpm** v9 or later
+- A modern web browser (Chrome, Firefox, Edge)
+
+## Installation
+
+```bash
+git clone <repo-url> ceegee
+cd ceegee
+pnpm install
+```
+
+## Starting the server
+
+```bash
+pnpm dev
+```
+
+CeeGee starts at `http://localhost:3000`. Open this URL in your browser to see the landing page, then click **Launch App** to enter the application.
+
+## Creating your first workspace
+
+A workspace is the top-level container for your project. It holds all your channels, layers, elements, and assets.
+
+1. From the workspace hub (`/app`), click **Create Workspace**.
+2. Enter a name (e.g., "My Show") and optional description.
+3. The default resolution is 1920x1080 at 16:9 -- you can adjust this if needed.
+4. Click **Create**.
+
+Your new workspace appears in the hub. From here you can:
+
+- Click **Producer** to build your show structure (channels, layers, elements).
+- Click **Operator** to control the live output (take/clear graphics).
+
+## First steps
+
+Here's a typical workflow to get your first graphic on screen:
+
+### 1. Set up the structure (Producer)
+
+Navigate to the Producer view for your workspace.
+
+1. **Create a channel** -- this is an output bus (e.g., "Main Program").
+2. **Create a layer** on that channel -- layers control z-index stacking (e.g., "Lower Thirds" at z-index 10).
+3. **Create an element** on that layer -- pick a module type (e.g., "Basic Lower Third"), give it a name, and fill in the configuration fields.
+
+### 2. Connect OBS
+
+1. In OBS, add a **Browser Source**.
+2. Set the URL to: `http://localhost:3000/o/<workspaceId>/channel/<channelId>`
+   (Replace the IDs with your actual workspace and channel IDs.)
+3. Set the resolution to match your workspace (1920x1080 by default).
+4. The overlay background is transparent -- it composites over your video sources.
+
+See [OBS Setup](obs-setup.md) for detailed instructions.
+
+### 3. Go live (Operator)
+
+Navigate to the Operator view for your workspace.
+
+1. Select your channel.
+2. Find the element you created.
+3. Click **Take** to bring it on screen. The graphic animates in.
+4. Click **Clear** to remove it. The graphic animates out.
+
+## Next steps
+
+- [Concepts](concepts.md) -- understand workspaces, channels, layers, elements, and modules.
+- [Producer Guide](producer-guide.md) -- detailed guide to building show structure.
+- [Operator Guide](operator-guide.md) -- detailed guide to live show control.
+- [OBS Setup](obs-setup.md) -- connect CeeGee to OBS Studio.
