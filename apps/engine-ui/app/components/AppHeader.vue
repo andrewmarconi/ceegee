@@ -12,10 +12,7 @@ defineProps<{
       class="flex items-center gap-3"
     >
       <AppLogo class="w-auto h-6 shrink-0" />
-      <Divider
-        layout="vertical"
-        class="h-5 mx-0"
-      />
+      <span class="w-px h-5 bg-surface-300 dark:bg-surface-600" />
       <span class="text-sm font-semibold">{{ title }}</span>
     </NuxtLink>
 

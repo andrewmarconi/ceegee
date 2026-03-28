@@ -12,4 +12,10 @@
   overflow: hidden;
   background: transparent;
 }
+
+:global(html.p-dark),
+:global(body) {
+  background: transparent !important;
+}
+
 </style>
