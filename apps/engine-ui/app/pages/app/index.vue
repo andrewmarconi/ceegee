@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
-import type { Workspace, WorkspaceId } from 'engine-core'
+import type { Workspace, WorkspaceId, ModuleRecord } from 'engine-core'
 
 const api = useEngineApi()
 const toast = useToast()
 
 const workspaces = ref<Workspace[]>([])
+const modules = ref<ModuleRecord[]>([])
 const loading = ref(true)
 
 const showCreateModal = ref(false)
@@ -15,6 +16,7 @@ const showDeleteConfirm = ref<WorkspaceId | null>(null)
 onMounted(async () => {
   try {
     workspaces.value = await api.listWorkspaces()
+    modules.value = await $fetch<ModuleRecord[]>('/api/modules')
   } catch {
     toast.add({ summary: 'Failed to load workspaces', severity: 'error', life: 3000 })
   } finally {
@@ -22,7 +24,7 @@ onMounted(async () => {
   }
 })
 
-async function handleCreate(data: { name: string, description: string }) {
+async function handleCreate(data: { name: string, description: string, themeTokens: Record<string, string> }) {
   try {
     const ws = await $fetch<Workspace>('/api/workspaces', {
       method: 'POST',
@@ -36,7 +38,7 @@ async function handleCreate(data: { name: string, description: string }) {
   }
 }
 
-async function handleUpdate(data: { name: string, description: string }) {
+async function handleUpdate(data: { name: string, description: string, themeTokens: Record<string, string> }) {
   if (!editingWorkspace.value) return
   const id = editingWorkspace.value.id
   try {
@@ -192,9 +194,10 @@ async function confirmDelete(id: WorkspaceId) {
       v-model:visible="showCreateModal"
       modal
       header="Create Workspace"
-      class="w-full max-w-md"
+      class="w-full max-w-xl"
     >
       <WorkspaceForm
+        :modules="modules"
         @submit="handleCreate"
         @cancel="showCreateModal = false"
       />
@@ -204,11 +207,12 @@ async function confirmDelete(id: WorkspaceId) {
       :visible="!!editingWorkspace"
       modal
       header="Edit Workspace"
-      class="w-full max-w-md"
+      class="w-full max-w-xl"
       @update:visible="(v: boolean) => { if (!v) editingWorkspace = null }"
     >
       <WorkspaceForm
         :workspace="editingWorkspace"
+        :modules="modules"
         @submit="handleUpdate"
         @cancel="editingWorkspace = null"
       />
