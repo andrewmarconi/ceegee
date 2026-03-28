@@ -7,7 +7,7 @@ export default defineNuxtConfig({
   devtools: {
     enabled: true
   },
-  css: ['~/assets/css/main.css'],
+  css: ['primeicons/primeicons.css', '~/assets/css/main.css'],
   compatibilityDate: '2025-01-15',
   nitro: {
     experimental: {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import gsap from 'gsap';
 import type { ModuleComponentProps } from 'engine-core';
 
@@ -45,13 +45,16 @@ function playEmphasize() {
   });
 }
 
+onMounted(() => {
+  if (props.runtimeState.visibility === 'visible') playEnter();
+});
+
 watch(
   () => props.runtimeState.visibility,
   (vis, oldVis) => {
     if (vis === 'visible' && oldVis !== 'visible') playEnter();
     if (vis === 'hidden' && oldVis === 'visible') playExit();
   },
-  { immediate: true },
 );
 
 watch(

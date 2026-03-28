@@ -20,6 +20,7 @@
     "gsap": "^3.12.7",
     "modules": "workspace:*",
     "nuxt": "^4.4.2",
+    "primeicons": "^7.0.0",
     "primevue": "^4.5.4",
     "tailwindcss": "^4.2.2"
   },

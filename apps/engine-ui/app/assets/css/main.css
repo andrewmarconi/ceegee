@@ -1,6 +1,52 @@
-@import "tailwindcss";
+@layer theme, base, components, utilities;
+
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
 
 @custom-variant dark (&:where(.p-dark, .p-dark *));
+
+@theme {
+  --color-surface-0: #ffffff;
+  --color-surface-50: #fafafa;
+  --color-surface-100: #f4f4f5;
+  --color-surface-200: #e4e4e7;
+  --color-surface-300: #d4d4d8;
+  --color-surface-400: #a1a1aa;
+  --color-surface-500: #71717a;
+  --color-surface-600: #52525b;
+  --color-surface-700: #3f3f46;
+  --color-surface-800: #27272a;
+  --color-surface-900: #18181b;
+  --color-surface-950: #09090b;
+
+  --color-primary-50: #eff6ff;
+  --color-primary-100: #dbeafe;
+  --color-primary-200: #bfdbfe;
+  --color-primary-300: #93c5fd;
+  --color-primary-400: #60a5fa;
+  --color-primary-500: #3b82f6;
+  --color-primary-600: #2563eb;
+  --color-primary-700: #1d4ed8;
+  --color-primary-800: #1e40af;
+  --color-primary-900: #1e3a8a;
+  --color-primary-950: #172554;
+}
+
+.p-dark .p-button-secondary.p-button-text,
+.p-dark .p-button-secondary.p-button-text .p-button-icon {
+  color: var(--p-surface-300) !important;
+}
+
+.p-dark .p-button-secondary.p-button-text:hover,
+.p-dark .p-button-secondary.p-button-text:hover .p-button-icon {
+  color: var(--p-surface-100) !important;
+  background: color-mix(in srgb, var(--p-surface-400) 16%, transparent);
+}
+
+.p-dark .p-button-secondary.p-button-outlined {
+  color: var(--p-surface-300) !important;
+  border-color: var(--p-surface-600) !important;
+}
 
 body {
   font-family: 'Atkinson Hyperlegible Next', sans-serif;
