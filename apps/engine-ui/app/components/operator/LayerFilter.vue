@@ -44,16 +44,7 @@ const liveLayerCount = computed(() =>
         :class="{ 'bg-primary-900/20 border-l-2 border-l-primary-500': selectedLayerId === null, 'border-l-2 border-l-transparent': selectedLayerId !== null }"
         @click="emit('update:selectedLayerId', null)"
       >
-        <div class="flex items-center justify-between">
-          <span class="text-sm font-medium">All Layers</span>
-          <Tag
-            v-if="liveLayerCount > 0"
-            severity="danger"
-            class="text-xs"
-          >
-            {{ liveLayerCount }} ON AIR
-          </Tag>
-        </div>
+        <span class="text-sm font-medium">All Layers</span>
       </button>
 
       <button
