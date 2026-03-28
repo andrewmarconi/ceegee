@@ -1,41 +1,63 @@
 <script setup lang="ts">
-import type { Channel } from 'engine-core';
+import type { Channel } from 'engine-core'
 
 const props = defineProps<{
-  channel?: Channel | null;
-}>();
+  channel?: Channel | null
+}>()
 
 const emit = defineEmits<{
-  submit: [data: { name: string; description: string }];
-  cancel: [];
-}>();
+  submit: [data: { name: string, description: string }]
+  cancel: []
+}>()
 
 const state = reactive({
   name: props.channel?.name ?? '',
   description: props.channel?.description ?? ''
-});
+})
 
-const isEdit = computed(() => !!props.channel);
+const isEdit = computed(() => !!props.channel)
 
 function handleSubmit() {
-  if (!state.name.trim()) return;
-  emit('submit', { name: state.name.trim(), description: state.description.trim() });
+  if (!state.name.trim()) return
+  emit('submit', { name: state.name.trim(), description: state.description.trim() })
 }
 </script>
 
 <template>
-  <UForm :state="state" @submit="handleSubmit" class="flex flex-col gap-4">
-    <UFormField label="Name" name="name" required>
-      <UInput v-model="state.name" placeholder="e.g. Main Program" class="w-full" autofocus />
-    </UFormField>
+  <form
+    class="flex flex-col gap-4"
+    @submit.prevent="handleSubmit"
+  >
+    <div class="flex flex-col gap-1">
+      <label class="text-sm font-medium">Name <span class="text-red-500">*</span></label>
+      <InputText
+        v-model="state.name"
+        placeholder="e.g. Main Program"
+        autofocus
+        fluid
+      />
+    </div>
 
-    <UFormField label="Description" name="description">
-      <UTextarea v-model="state.description" placeholder="Optional description" class="w-full" />
-    </UFormField>
+    <div class="flex flex-col gap-1">
+      <label class="text-sm font-medium">Description</label>
+      <Textarea
+        v-model="state.description"
+        placeholder="Optional description"
+        fluid
+      />
+    </div>
 
     <div class="flex justify-end gap-2 pt-2">
-      <UButton label="Cancel" color="neutral" variant="ghost" @click="emit('cancel')" />
-      <UButton :label="isEdit ? 'Save' : 'Create'" type="submit" />
+      <Button
+        label="Cancel"
+        severity="secondary"
+        text
+        @click="emit('cancel')"
+      />
+      <Button
+        :label="isEdit ? 'Save' : 'Create'"
+        type="submit"
+      />
     </div>
-  </UForm>
+  </form>
 </template>
