@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.p-dark, .p-dark *));
+
 body {
   font-family: 'Atkinson Hyperlegible Next', sans-serif;
 }

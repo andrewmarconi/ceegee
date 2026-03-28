@@ -62,6 +62,20 @@ const wsStatusLabel = computed(() => {
     default: return 'Unknown'
   }
 })
+
+const toast = useToast()
+
+const overlayUrl = computed(() => {
+  if (!props.selectedWorkspaceId || !props.selectedChannelId) return null
+  return `/o/${props.selectedWorkspaceId}/channel/${props.selectedChannelId}`
+})
+
+async function copyOverlayUrl() {
+  if (!overlayUrl.value) return
+  const fullUrl = `${window.location.origin}${overlayUrl.value}`
+  await navigator.clipboard.writeText(fullUrl)
+  toast.add({ summary: 'Overlay URL copied', severity: 'success', life: 2000 })
+}
 </script>
 
 <template>
@@ -92,6 +106,16 @@ const wsStatusLabel = computed(() => {
     </div>
 
     <div class="flex-1" />
+
+    <Button
+      v-if="overlayUrl"
+      label="Overlay URL"
+      icon="pi pi-copy"
+      severity="secondary"
+      text
+      size="small"
+      @click="copyOverlayUrl"
+    />
 
     <Tag
       :severity="wsStatusSeverity"
