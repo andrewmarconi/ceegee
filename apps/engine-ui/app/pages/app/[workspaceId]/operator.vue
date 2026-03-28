@@ -128,7 +128,7 @@ async function onClear(_layerId: number, elementId: number) {
   }
 }
 
-async function onUpdateElement(elementId: number, fields: { name?: string; config?: unknown }) {
+async function onUpdateElement(elementId: number, fields: { name?: string, config?: unknown }) {
   if (!selectedWorkspaceId.value || !selectedChannelId.value) return
   try {
     const updated = await api.updateElement(
@@ -148,7 +148,7 @@ async function onUpdateElement(elementId: number, fields: { name?: string; confi
 </script>
 
 <template>
-  <div class="h-screen flex flex-col bg-gray-50 dark:bg-gray-950">
+  <div class="h-screen flex flex-col bg-surface-50 dark:bg-surface-950">
     <OperatorTopBar
       :workspaces="workspaces"
       :channels="channels"
@@ -161,7 +161,7 @@ async function onUpdateElement(elementId: number, fields: { name?: string; confi
     />
 
     <div class="flex-1 flex overflow-hidden">
-      <div class="w-72 border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 flex-shrink-0 overflow-hidden">
+      <div class="w-72 border-r border-surface-200 dark:border-surface-700 bg-surface-0 dark:bg-surface-900 flex-shrink-0 overflow-hidden">
         <OperatorRundown
           :elements="elements"
           :layers="layers"
@@ -171,7 +171,7 @@ async function onUpdateElement(elementId: number, fields: { name?: string; confi
         />
       </div>
 
-      <div class="flex-1 overflow-hidden bg-gray-50 dark:bg-gray-950">
+      <div class="flex-1 overflow-hidden bg-surface-50 dark:bg-surface-950">
         <OperatorLayerDashboard
           :layers="layers"
           :elements="elements"
@@ -183,7 +183,7 @@ async function onUpdateElement(elementId: number, fields: { name?: string; confi
         />
       </div>
 
-      <div class="w-80 border-l border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 flex-shrink-0 overflow-hidden">
+      <div class="w-80 border-l border-surface-200 dark:border-surface-700 bg-surface-0 dark:bg-surface-900 flex-shrink-0 overflow-hidden">
         <OperatorContextPanel
           :element="selectedElement"
           :channel-state="channelState"
