@@ -27,8 +27,8 @@ const isEdit = computed(() => !!props.workspace)
 const fontErrors = reactive<Record<string, string>>({})
 
 const GLOBAL_TOKENS: ThemeTokenDef[] = [
-  { key: '--overlay-font-family-primary', label: 'Primary Font Family', type: 'text', default: 'sans-serif' },
-  { key: '--overlay-font-family-secondary', label: 'Secondary Font Family', type: 'text', default: 'sans-serif' },
+  { key: '--overlay-font-family-primary', label: 'Primary Font Family (Google Fonts)', type: 'text', default: 'sans-serif' },
+  { key: '--overlay-font-family-secondary', label: 'Secondary Font Family (Google Fonts)', type: 'text', default: 'sans-serif' },
 ]
 
 const modulesWithTokens = computed(() =>
