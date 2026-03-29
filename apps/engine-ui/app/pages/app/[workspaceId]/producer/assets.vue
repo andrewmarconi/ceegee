@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
-import type { Asset, Element, AssetId } from 'engine-core'
+import type { Asset, Element, Workspace, AssetId } from 'engine-core'
 
 const route = useRoute()
 const workspaceId = computed(() => Number(route.params.workspaceId))
 const api = useProducerApi(workspaceId)
+const engineApi = useEngineApi()
 const toast = useToast()
 
+const workspace = ref<Workspace | null>(null)
 const assets = ref<Asset[]>([])
 const allElements = ref<Element[]>([])
 const loading = ref(true)
@@ -27,10 +29,12 @@ const showUsageModal = ref(false)
 
 onMounted(async () => {
   try {
-    const [assetList, channelList] = await Promise.all([
+    const [ws, assetList, channelList] = await Promise.all([
+      engineApi.getWorkspace(workspaceId.value),
       api.listAssets(),
       api.listChannels()
     ])
+    workspace.value = ws
     assets.value = assetList
 
     const elementPromises = channelList.map(ch => api.listElementsByChannel(ch.id))
@@ -76,22 +80,15 @@ function handleViewUsage(id: AssetId) {
   <div class="flex flex-col h-full">
     <AppHeader
       title="Assets"
-      description="Manage workspace images, logos, and graphics"
+      :workspace-name="workspace?.name"
     >
       <template #actions>
-        <NuxtLink :to="`/app/${workspaceId}/producer`">
-          <Button
-            label="Structure"
-            icon="pi pi-objects-column"
-            severity="secondary"
-            outlined
-          />
-        </NuxtLink>
+        <AppPageNav :workspace-id="workspaceId" />
       </template>
     </AppHeader>
 
     <div class="flex flex-1 min-h-0">
-      <div class="w-48 border-r border-surface-200 dark:border-surface-700 flex-shrink-0 overflow-y-auto">
+      <div class="w-48 border-r border-surface-200 dark:border-surface-700 shrink-0 overflow-y-auto">
         <div class="px-3 py-2 border-b border-surface-200 dark:border-surface-700">
           <h3 class="text-xs font-semibold text-surface-500 uppercase tracking-wide">
             Folders

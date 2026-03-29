@@ -16,20 +16,13 @@ const emit = defineEmits<{
   'update:selectedChannelId': [value: number]
 }>()
 
-const workspaceItems = computed(() =>
-  props.workspaces.map(w => ({ label: w.name, value: String(w.id) }))
+const selectedWorkspace = computed(() =>
+  props.workspaces.find(w => w.id === props.selectedWorkspaceId)
 )
 
 const channelItems = computed(() =>
   props.channels.map(c => ({ label: c.name, value: String(c.id) }))
 )
-
-const selectedWorkspaceValue = computed({
-  get: () => props.selectedWorkspaceId !== null ? String(props.selectedWorkspaceId) : undefined,
-  set: (val) => {
-    if (val) emit('update:selectedWorkspaceId', Number(val))
-  }
-})
 
 const selectedChannelValue = computed({
   get: () => props.selectedChannelId !== null ? String(props.selectedChannelId) : undefined,
@@ -82,24 +75,18 @@ async function copyOverlayUrl() {
   <div class="flex items-center gap-3 px-4 py-2 border-b border-surface-700 bg-surface-900">
     <NuxtLink
       to="/app"
-      class="flex items-center gap-3"
+      class="shrink-0"
+      v-tooltip.bottom="'Back to Workspaces'"
     >
-      <AppLogo class="w-auto h-6 shrink-0" />
+      <AppLogo class="w-auto h-6" />
     </NuxtLink>
-    <span class="w-px h-5 bg-surface-600" />
+
+    <span class="w-px h-5 bg-surface-600 shrink-0" />
+
+    <span class="text-sm font-semibold truncate">{{ selectedWorkspace?.name ?? 'Workspace' }}</span>
+    <span class="text-surface-500 shrink-0">&#8250;</span>
     <span class="text-sm font-semibold whitespace-nowrap">Operator</span>
-    <span class="text-surface-500">&#8250;</span>
-
-    <Select
-      v-model="selectedWorkspaceValue"
-      :options="workspaceItems"
-      option-label="label"
-      option-value="value"
-      placeholder="Workspace"
-      class="w-44"
-    />
-
-    <span class="text-surface-500">&#8250;</span>
+    <span class="text-surface-500 shrink-0">&#8250;</span>
 
     <Select
       v-model="selectedChannelValue"
@@ -152,5 +139,7 @@ async function copyOverlayUrl() {
     >
       Off Air
     </Tag>
+
+    <AppPageNav :workspace-id="selectedWorkspaceId ?? 0" />
   </div>
 </template>
