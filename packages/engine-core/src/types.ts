@@ -293,6 +293,16 @@ export type EngineEvent =
     }
   | { type: 'telemetry'; payload: unknown };
 
+// -- Resolved Fonts --
+
+export type ResolvedFont = {
+  family: string;
+  slug: string;
+  isVariable: boolean;
+  weights?: number[];
+  files: string[];
+};
+
 // -- Helpers --
 
 export function now(): IsoDateTime {
