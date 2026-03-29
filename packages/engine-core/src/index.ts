@@ -42,6 +42,11 @@ import {
 // Re-export types and db utilities
 export * from './types';
 export { createDatabase, type AppDatabase } from './db/connection';
+export {
+  validateAndCacheFonts,
+  getResolvedFonts,
+  type FontValidationError,
+} from './fonts/index';
 
 // ============================================================
 // Workspaces
