@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import type { Channel, Layer, Element, ModuleRecord, ChannelId, LayerId, ElementId } from 'engine-core'
+import type { Channel, Layer, Element, ModuleRecord, Workspace, ChannelId, LayerId, ElementId } from 'engine-core'
 
 const route = useRoute()
 const workspaceId = computed(() => Number(route.params.workspaceId))
 const api = useProducerApi(workspaceId)
+const engineApi = useEngineApi()
 const toast = useToast()
 
+const workspace = ref<Workspace | null>(null)
 const channels = ref<Channel[]>([])
 const layers = ref<Layer[]>([])
 const elements = ref<Element[]>([])
@@ -20,10 +22,12 @@ const loadingElements = ref(false)
 
 onMounted(async () => {
   try {
-    const [channelList, moduleList] = await Promise.all([
+    const [ws, channelList, moduleList] = await Promise.all([
+      engineApi.getWorkspace(workspaceId.value),
       api.listChannels(),
       api.listModules()
     ])
+    workspace.value = ws
     channels.value = channelList
     modules.value = moduleList
   } catch {
@@ -188,33 +192,18 @@ async function handleReorderElements(elementIds: ElementId[]) {
 </script>
 
 <template>
-  <div class="flex flex-col h-full">
+  <div class="flex flex-col h-screen">
     <AppHeader
       title="Producer"
-      description="Manage channels, layers, and elements"
+      :workspace-name="workspace?.name"
     >
       <template #actions>
-        <NuxtLink :to="`/app/${workspaceId}/producer/assets`">
-          <Button
-            label="Assets"
-            icon="pi pi-image"
-            severity="secondary"
-            outlined
-          />
-        </NuxtLink>
-        <NuxtLink :to="`/app/${workspaceId}/operator`">
-          <Button
-            label="Operator"
-            icon="pi pi-play"
-            severity="secondary"
-            outlined
-          />
-        </NuxtLink>
+        <AppPageNav :workspace-id="workspaceId" />
       </template>
     </AppHeader>
 
     <div class="flex flex-1 min-h-0">
-      <div class="w-64 border-r border-surface-200 dark:border-surface-700 flex-shrink-0 overflow-hidden">
+      <div class="w-64 border-r border-surface-200 dark:border-surface-700 shrink-0 overflow-hidden">
         <ProducerChannelList
           :channels="channels"
           :selected-id="selectedChannelId"
@@ -226,7 +215,7 @@ async function handleReorderElements(elementIds: ElementId[]) {
         />
       </div>
 
-      <div class="w-72 border-r border-surface-200 dark:border-surface-700 flex-shrink-0 overflow-hidden">
+      <div class="w-72 border-r border-surface-200 dark:border-surface-700 shrink-0 overflow-hidden">
         <template v-if="selectedChannelId">
           <ProducerLayerList
             :layers="layers"

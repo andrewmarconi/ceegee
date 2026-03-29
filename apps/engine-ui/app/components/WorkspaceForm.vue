@@ -24,9 +24,11 @@ const tokenValues = reactive<Record<string, string>>(
 
 const isEdit = computed(() => !!props.workspace)
 
+const fontErrors = reactive<Record<string, string>>({})
+
 const GLOBAL_TOKENS: ThemeTokenDef[] = [
-  { key: '--overlay-font-family-primary', label: 'Primary Font Family', type: 'text', default: 'sans-serif' },
-  { key: '--overlay-font-family-secondary', label: 'Secondary Font Family', type: 'text', default: 'sans-serif' },
+  { key: '--overlay-font-family-primary', label: 'Primary Font Family (Google Fonts)', type: 'text', default: 'sans-serif' },
+  { key: '--overlay-font-family-secondary', label: 'Secondary Font Family (Google Fonts)', type: 'text', default: 'sans-serif' },
 ]
 
 const modulesWithTokens = computed(() =>
@@ -60,12 +62,24 @@ function setTokenNumberValue(key: string, value: number | null) {
 
 function handleSubmit() {
   if (!state.name.trim()) return
+  // Clear previous font errors
+  for (const key of Object.keys(fontErrors)) delete fontErrors[key]
   emit('submit', {
     name: state.name.trim(),
     description: state.description.trim(),
     themeTokens: { ...tokenValues },
   })
 }
+
+function setFontError(token: string, message: string) {
+  fontErrors[token] = message
+}
+
+function clearFontErrors() {
+  for (const key of Object.keys(fontErrors)) delete fontErrors[key]
+}
+
+defineExpose({ setFontError, clearFontErrors })
 </script>
 
 <template>
@@ -108,9 +122,13 @@ function handleSubmit() {
             <InputText
               :model-value="getTokenValue(token.key)"
               :placeholder="token.default"
+              :invalid="!!fontErrors[token.key]"
               fluid
               @update:model-value="setTokenValue(token.key, $event)"
             />
+            <small v-if="fontErrors[token.key]" class="text-red-400 text-xs">
+              {{ fontErrors[token.key] }}
+            </small>
           </div>
         </div>
       </TabPanel>

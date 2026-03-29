@@ -13,6 +13,9 @@ const showCreateModal = ref(false)
 const editingWorkspace = ref<Workspace | null>(null)
 const showDeleteConfirm = ref<WorkspaceId | null>(null)
 
+const createFormRef = ref<InstanceType<typeof WorkspaceForm>>()
+const editFormRef = ref<InstanceType<typeof WorkspaceForm>>()
+
 onMounted(async () => {
   try {
     workspaces.value = await api.listWorkspaces()
@@ -26,6 +29,7 @@ onMounted(async () => {
 
 async function handleCreate(data: { name: string, description: string, themeTokens: Record<string, string> }) {
   try {
+    createFormRef.value?.clearFontErrors()
     const ws = await $fetch<Workspace>('/api/workspaces', {
       method: 'POST',
       body: data
@@ -33,7 +37,14 @@ async function handleCreate(data: { name: string, description: string, themeToke
     workspaces.value.push(ws)
     showCreateModal.value = false
     toast.add({ summary: `Workspace "${ws.name}" created`, severity: 'success', life: 3000 })
-  } catch {
+  } catch (err: unknown) {
+    if (err && typeof err === 'object' && 'data' in err) {
+      const errData = (err as any).data?.data
+      if (errData?.token && errData?.family) {
+        createFormRef.value?.setFontError(errData.token, `Font '${errData.family}' not found on Google Fonts`)
+        return
+      }
+    }
     toast.add({ summary: 'Failed to create workspace', severity: 'error', life: 3000 })
   }
 }
@@ -42,6 +53,7 @@ async function handleUpdate(data: { name: string, description: string, themeToke
   if (!editingWorkspace.value) return
   const id = editingWorkspace.value.id
   try {
+    editFormRef.value?.clearFontErrors()
     const updated = await $fetch<Workspace>(`/api/workspaces/${id}`, {
       method: 'PUT',
       body: data
@@ -50,7 +62,14 @@ async function handleUpdate(data: { name: string, description: string, themeToke
     if (idx !== -1) workspaces.value[idx] = updated
     editingWorkspace.value = null
     toast.add({ summary: 'Workspace updated', severity: 'success', life: 3000 })
-  } catch {
+  } catch (err: unknown) {
+    if (err && typeof err === 'object' && 'data' in err) {
+      const errData = (err as any).data?.data
+      if (errData?.token && errData?.family) {
+        editFormRef.value?.setFontError(errData.token, `Font '${errData.family}' not found on Google Fonts`)
+        return
+      }
+    }
     toast.add({ summary: 'Failed to update workspace', severity: 'error', life: 3000 })
   }
 }
@@ -197,6 +216,7 @@ async function confirmDelete(id: WorkspaceId) {
       class="w-full max-w-xl"
     >
       <WorkspaceForm
+        ref="createFormRef"
         :modules="modules"
         @submit="handleCreate"
         @cancel="showCreateModal = false"
@@ -211,6 +231,7 @@ async function confirmDelete(id: WorkspaceId) {
       @update:visible="(v: boolean) => { if (!v) editingWorkspace = null }"
     >
       <WorkspaceForm
+        ref="editFormRef"
         :workspace="editingWorkspace"
         :modules="modules"
         @submit="handleUpdate"
