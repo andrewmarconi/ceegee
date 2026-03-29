@@ -7,6 +7,7 @@ import type {
   Element,
   ModuleRecord,
   LayerState,
+  ResolvedFont,
 } from 'engine-core';
 
 const props = defineProps<{
@@ -114,6 +115,38 @@ const themeVars = computed(() => {
     style[key] = val;
   }
   return style;
+});
+
+// Font face injection
+type WorkspaceWithFonts = Workspace & { resolvedFonts?: ResolvedFont[] };
+
+const fontFaceCss = computed(() => {
+  const ws = workspace.value as WorkspaceWithFonts | null;
+  if (!ws?.resolvedFonts?.length) return '';
+
+  return ws.resolvedFonts.map((font) => {
+    if (font.isVariable) {
+      return `@font-face {
+  font-family: '${font.family}';
+  src: url('/api/fonts/${font.slug}/variable.woff2') format('woff2');
+  font-weight: 1 999;
+  font-display: block;
+}`;
+    }
+    return (font.weights ?? [400]).map((w) => `@font-face {
+  font-family: '${font.family}';
+  src: url('/api/fonts/${font.slug}/${w}.woff2') format('woff2');
+  font-weight: ${w};
+  font-display: block;
+}`).join('\n');
+  }).join('\n');
+});
+
+// Inject dynamic font styles via <head>
+useHead({
+  style: computed(() =>
+    fontFaceCss.value ? [{ innerHTML: fontFaceCss.value }] : []
+  ),
 });
 </script>
 
