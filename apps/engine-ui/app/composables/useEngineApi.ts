@@ -68,6 +68,28 @@ export function useEngineApi() {
     )
   }
 
+  function clearAllElements(
+    workspaceId: number,
+    channelId: number
+  ): Promise<ChannelState> {
+    return $fetch(
+      `/api/workspaces/${workspaceId}/channels/${channelId}/clear-all`,
+      { method: 'POST' }
+    )
+  }
+
+  function updateLayer(
+    workspaceId: number,
+    channelId: number,
+    layerId: number,
+    input: { locked?: boolean; name?: string; zIndex?: number }
+  ): Promise<Layer> {
+    return $fetch(
+      `/api/workspaces/${workspaceId}/channels/${channelId}/layers/${layerId}`,
+      { method: 'PUT', body: input }
+    )
+  }
+
   function elementAction(
     workspaceId: number,
     channelId: number,
@@ -91,6 +113,8 @@ export function useEngineApi() {
     updateElement,
     takeElement,
     clearElement,
+    clearAllElements,
+    updateLayer,
     elementAction
   }
 }
