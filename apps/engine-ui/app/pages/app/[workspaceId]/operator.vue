@@ -112,14 +112,14 @@ async function onToggle(elementId: number) {
     } else {
       await api.takeElement(selectedWorkspaceId.value, selectedChannelId.value, elementId)
     }
-  } catch (err: any) {
-    if (err?.response?.status === 403) return
+  } catch (err: unknown) {
+    if (err && typeof err === 'object' && 'response' in err && (err as { response?: { status?: number } }).response?.status === 403) return
     console.error('Toggle failed:', err)
   }
 }
 
-const layerFilterRef = ref<InstanceType<typeof OperatorLayerFilter> | null>(null)
-const elementGridRef = ref<InstanceType<typeof OperatorElementGrid> | null>(null)
+const layerFilterRef = ref<{ flashLock: (layerId: number) => void } | null>(null)
+const elementGridRef = ref<{ flashLockedElements: (layerIds: number[]) => void } | null>(null)
 
 async function onToggleLock(layerId: number) {
   if (!selectedWorkspaceId.value || !selectedChannelId.value) return
@@ -147,7 +147,7 @@ async function onClearAll() {
     await api.clearAllElements(selectedWorkspaceId.value, selectedChannelId.value)
     const lockedLiveLayerIds = layers.value
       .filter(l => l.locked)
-      .filter(l => {
+      .filter((l) => {
         const layerState = channelState.value?.layers.find(ls => ls.layerId === l.id)
         return layerState?.elements.some(el => el.visibility === 'visible' || el.visibility === 'entering')
       })

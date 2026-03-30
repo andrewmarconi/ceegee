@@ -45,8 +45,8 @@ const hasUnlockedOnAir = computed(() => {
   if (!props.channelState) return false
   const lockedLayerIds = new Set(props.layers.filter(l => l.locked).map(l => l.id))
   return props.channelState.layers.some(layer =>
-    !lockedLayerIds.has(layer.layerId) &&
-    layer.elements.some(el => el.visibility === 'visible' || el.visibility === 'entering')
+    !lockedLayerIds.has(layer.layerId)
+    && layer.elements.some(el => el.visibility === 'visible' || el.visibility === 'entering')
   )
 })
 
@@ -100,9 +100,9 @@ async function copyOverlayUrl() {
 <template>
   <div class="flex items-center gap-3 px-4 py-2 border-b border-surface-700 bg-surface-900">
     <NuxtLink
+      v-tooltip.bottom="'Back to Workspaces'"
       to="/app"
       class="shrink-0"
-      v-tooltip.bottom="'Back to Workspaces'"
     >
       <AppLogo class="w-auto h-6" />
     </NuxtLink>

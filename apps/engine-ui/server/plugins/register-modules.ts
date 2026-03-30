@@ -1,8 +1,8 @@
-import { allManifests } from 'modules';
-import { upsertModule } from 'engine-core';
+import { allManifests } from 'modules'
+import { upsertModule } from 'engine-core'
 
 export default defineNitroPlugin(() => {
-  const db = useDb();
+  const db = useDb()
 
   for (const manifest of allManifests) {
     upsertModule(db, {
@@ -15,9 +15,9 @@ export default defineNitroPlugin(() => {
       actions: manifest.actions,
       animationHooks: manifest.animationHooks,
       capabilities: manifest.capabilities,
-      themeTokens: manifest.themeTokens,
-    });
+      themeTokens: manifest.themeTokens
+    })
   }
 
-  console.log(`[CeeGee] Registered ${allManifests.length} modules`);
-});
+  console.log(`[CeeGee] Registered ${allManifests.length} modules`)
+})

@@ -1,4 +1,4 @@
-import { buildChannelState } from 'engine-core';
+import { buildChannelState } from 'engine-core'
 
 export default defineWebSocketHandler({
   open(_peer) {
@@ -7,25 +7,25 @@ export default defineWebSocketHandler({
 
   message(peer, message) {
     try {
-      const data = JSON.parse(message.text());
+      const data = JSON.parse(message.text())
 
       if (data.type === 'subscribe') {
-        const workspaceId = Number(data.workspaceId);
-        const channelId = Number(data.channelId);
+        const workspaceId = Number(data.workspaceId)
+        const channelId = Number(data.channelId)
 
         if (!workspaceId || !channelId) {
-          peer.send(JSON.stringify({ type: 'error', message: 'Invalid workspaceId or channelId' }));
-          return;
+          peer.send(JSON.stringify({ type: 'error', message: 'Invalid workspaceId or channelId' }))
+          return
         }
 
         // Remove any existing subscription for this peer (re-subscribe)
-        removeWsConnection(peer);
-        addWsConnection(peer, workspaceId, channelId);
+        removeWsConnection(peer)
+        addWsConnection(peer, workspaceId, channelId)
 
         // Send initial channel state
-        const db = useDb();
-        const state = buildChannelState(db, workspaceId, channelId);
-        peer.send(JSON.stringify({ type: 'state:init', payload: state }));
+        const db = useDb()
+        const state = buildChannelState(db, workspaceId, channelId)
+        peer.send(JSON.stringify({ type: 'state:init', payload: state }))
       }
     } catch {
       // Ignore malformed messages
@@ -33,6 +33,6 @@ export default defineWebSocketHandler({
   },
 
   close(peer) {
-    removeWsConnection(peer);
+    removeWsConnection(peer)
   }
-});
+})

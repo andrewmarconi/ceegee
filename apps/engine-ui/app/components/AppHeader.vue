@@ -8,9 +8,9 @@ defineProps<{
 <template>
   <header class="flex items-center gap-3 px-4 py-2 border-b border-surface-200 dark:border-surface-700">
     <NuxtLink
+      v-tooltip.bottom="'Back to Workspaces'"
       to="/app"
       class="shrink-0"
-      v-tooltip.bottom="'Back to Workspaces'"
     >
       <AppLogo class="w-auto h-6" />
     </NuxtLink>

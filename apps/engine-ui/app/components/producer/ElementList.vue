@@ -50,7 +50,7 @@ function moveElement(index: number, direction: 'up' | 'down') {
   const ids = props.elements.map(e => e.id)
   const targetIndex = direction === 'up' ? index - 1 : index + 1
   if (targetIndex < 0 || targetIndex >= ids.length) return
-  ;[ids[index], ids[targetIndex]] = [ids[targetIndex], ids[index]]
+  ;[ids[index], ids[targetIndex]] = [ids[targetIndex]!, ids[index]!]
   emit('reorder', ids)
 }
 </script>

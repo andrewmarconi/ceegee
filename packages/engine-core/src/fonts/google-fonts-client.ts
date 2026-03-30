@@ -13,12 +13,13 @@ export function parseCssForUrls(css: string): FontUrl[] {
   let block: RegExpExecArray | null;
   while ((block = blockRegex.exec(css)) !== null) {
     const body = block[1];
+    if (!body) continue;
     const urlMatch = body.match(/src:\s*url\(([^)]+)\)\s*format\(['"]woff2['"]\)/);
     const weightMatch = body.match(/font-weight:\s*([^;]+);/);
-    if (urlMatch) {
+    if (urlMatch && urlMatch[1]) {
       results.push({
         url: urlMatch[1],
-        weight: weightMatch ? weightMatch[1].trim() : '400',
+        weight: weightMatch?.[1]?.trim() ?? '400',
       });
     }
   }
@@ -78,9 +79,10 @@ export async function downloadFamily(family: string): Promise<DownloadResult> {
     const css = await singleRes.text();
     const urls = parseCssForUrls(css);
     if (urls.length === 0) throw new Error(`No woff2 URLs found for "${family}"`);
-    const fontRes = await fetch(urls[0].url);
+    const first = urls[0]!;
+    const fontRes = await fetch(first.url);
     const buffer = Buffer.from(await fontRes.arrayBuffer());
-    const weight = urls[0].weight.trim();
+    const weight = first.weight.trim();
     const fileName = `${weight}.woff2`;
     return {
       isVariable: false,

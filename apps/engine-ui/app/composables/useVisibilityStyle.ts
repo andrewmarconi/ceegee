@@ -4,21 +4,21 @@ const visibilityClassMap: Record<ElementVisibility, string> = {
   visible: 'status-visible',
   entering: 'status-entering',
   exiting: 'status-exiting',
-  hidden: 'status-hidden',
+  hidden: 'status-hidden'
 }
 
 const visibilityLabelMap: Record<ElementVisibility, string> = {
   visible: 'On Air',
   entering: 'Entering',
   exiting: 'Exiting',
-  hidden: 'Ready',
+  hidden: 'Ready'
 }
 
 const visibilitySeverityMap: Record<ElementVisibility, 'danger' | 'warn' | 'secondary'> = {
   visible: 'danger',
   entering: 'danger',
   exiting: 'warn',
-  hidden: 'secondary',
+  hidden: 'secondary'
 }
 
 export function useVisibilityStyle(visibility: MaybeRefOrGetter<ElementVisibility>) {

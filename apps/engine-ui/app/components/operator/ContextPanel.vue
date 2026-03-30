@@ -155,7 +155,7 @@ function saveChanges() {
           :style="{
             width: `${outputWidth}px`,
             height: `${outputHeight}px`,
-            transform: `scale(${previewScale})`,
+            transform: `scale(${previewScale})`
           }"
           scrolling="no"
           sandbox="allow-scripts allow-same-origin"
@@ -216,14 +216,14 @@ function saveChanges() {
             :placeholder="field.label"
             :rows="3"
             fluid
-            @update:model-value="(val: string) => onConfigFieldInput(field.key, val)"
+            @update:model-value="(val: string | undefined) => onConfigFieldInput(field.key, val ?? '')"
           />
           <InputText
             v-else
             :model-value="String(editConfig[field.key] ?? '')"
             :placeholder="field.label"
             fluid
-            @update:model-value="(val: string) => onConfigFieldInput(field.key, val)"
+            @update:model-value="(val: string | undefined) => onConfigFieldInput(field.key, val ?? '')"
           />
         </div>
 

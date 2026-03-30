@@ -13,7 +13,7 @@ const emit = defineEmits<{
 
 const state = reactive({
   name: props.workspace?.name ?? '',
-  description: props.workspace?.description ?? '',
+  description: props.workspace?.description ?? ''
 })
 
 const tokenValues = reactive<Record<string, string>>(
@@ -28,7 +28,7 @@ const fontErrors = reactive<Record<string, string>>({})
 
 const GLOBAL_TOKENS: ThemeTokenDef[] = [
   { key: '--overlay-font-family-primary', label: 'Primary Font Family (Google Fonts)', type: 'text', default: 'sans-serif' },
-  { key: '--overlay-font-family-secondary', label: 'Secondary Font Family (Google Fonts)', type: 'text', default: 'sans-serif' },
+  { key: '--overlay-font-family-secondary', label: 'Secondary Font Family (Google Fonts)', type: 'text', default: 'sans-serif' }
 ]
 
 const modulesWithTokens = computed(() =>
@@ -41,7 +41,7 @@ function getTokenValue(key: string): string {
 
 function setTokenValue(key: string, value: string) {
   if (value === '') {
-    delete tokenValues[key]
+    Reflect.deleteProperty(tokenValues, key)
   } else {
     tokenValues[key] = value
   }
@@ -54,7 +54,7 @@ function getTokenNumberValue(key: string): number | null {
 
 function setTokenNumberValue(key: string, value: number | null) {
   if (value === null) {
-    delete tokenValues[key]
+    Reflect.deleteProperty(tokenValues, key)
   } else {
     tokenValues[key] = String(value)
   }
@@ -63,11 +63,11 @@ function setTokenNumberValue(key: string, value: number | null) {
 function handleSubmit() {
   if (!state.name.trim()) return
   // Clear previous font errors
-  for (const key of Object.keys(fontErrors)) delete fontErrors[key]
+  for (const key of Object.keys(fontErrors)) Reflect.deleteProperty(fontErrors, key)
   emit('submit', {
     name: state.name.trim(),
     description: state.description.trim(),
-    themeTokens: { ...tokenValues },
+    themeTokens: { ...tokenValues }
   })
 }
 
@@ -76,7 +76,7 @@ function setFontError(token: string, message: string) {
 }
 
 function clearFontErrors() {
-  for (const key of Object.keys(fontErrors)) delete fontErrors[key]
+  for (const key of Object.keys(fontErrors)) Reflect.deleteProperty(fontErrors, key)
 }
 
 defineExpose({ setFontError, clearFontErrors })
@@ -88,7 +88,10 @@ defineExpose({ setFontError, clearFontErrors })
     @submit.prevent="handleSubmit"
   >
     <TabView>
-      <TabPanel header="General">
+      <TabPanel
+        value="0"
+        header="General"
+      >
         <div class="flex flex-col gap-4 pt-2">
           <div class="flex flex-col gap-1">
             <label class="text-sm font-medium">Name <span class="text-red-500">*</span></label>
@@ -111,7 +114,10 @@ defineExpose({ setFontError, clearFontErrors })
         </div>
       </TabPanel>
 
-      <TabPanel header="Global Styles">
+      <TabPanel
+        value="1"
+        header="Global Styles"
+      >
         <div class="flex flex-col gap-4 pt-2">
           <div
             v-for="token in GLOBAL_TOKENS"
@@ -124,16 +130,22 @@ defineExpose({ setFontError, clearFontErrors })
               :placeholder="token.default"
               :invalid="!!fontErrors[token.key]"
               fluid
-              @update:model-value="setTokenValue(token.key, $event)"
+              @update:model-value="setTokenValue(token.key, $event ?? '')"
             />
-            <small v-if="fontErrors[token.key]" class="text-red-400 text-xs">
+            <small
+              v-if="fontErrors[token.key]"
+              class="text-red-400 text-xs"
+            >
               {{ fontErrors[token.key] }}
             </small>
           </div>
         </div>
       </TabPanel>
 
-      <TabPanel header="Module Styles">
+      <TabPanel
+        value="2"
+        header="Module Styles"
+      >
         <div class="flex flex-col gap-4 pt-2">
           <div
             v-if="modulesWithTokens.length === 0"
@@ -162,7 +174,7 @@ defineExpose({ setFontError, clearFontErrors })
                   :model-value="getTokenValue(token.key)"
                   :placeholder="token.default"
                   fluid
-                  @update:model-value="setTokenValue(token.key, $event)"
+                  @update:model-value="setTokenValue(token.key, $event ?? '')"
                 />
 
                 <InputNumber

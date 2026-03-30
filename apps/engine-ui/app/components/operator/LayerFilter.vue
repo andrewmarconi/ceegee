@@ -63,7 +63,7 @@ defineExpose({ flashLock })
           'bg-primary-900/20 border-l-2 border-l-primary-500': selectedLayerId === layer.id && !isLayerLive(layer.id),
           'bg-primary-900/20 border-l-2 border-l-red-500': selectedLayerId === layer.id && isLayerLive(layer.id),
           'border-l-2 border-l-red-500': selectedLayerId !== layer.id && isLayerLive(layer.id),
-          'border-l-2 border-l-transparent': selectedLayerId !== layer.id && !isLayerLive(layer.id),
+          'border-l-2 border-l-transparent': selectedLayerId !== layer.id && !isLayerLive(layer.id)
         }"
         @click="emit('update:selectedLayerId', layer.id)"
       >

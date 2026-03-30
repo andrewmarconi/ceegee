@@ -1,5 +1,5 @@
-import { listWorkspaces } from 'engine-core';
+import { listWorkspaces } from 'engine-core'
 
 export default defineEventHandler(() => {
-  return listWorkspaces(useDb());
-});
+  return listWorkspaces(useDb())
+})
