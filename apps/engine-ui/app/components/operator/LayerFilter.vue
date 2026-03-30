@@ -51,7 +51,12 @@ const liveLayerCount = computed(() =>
         v-for="layer in sortedLayers"
         :key="layer.id"
         class="w-full text-left px-3 py-3 border-b border-surface-800 transition-colors hover:bg-surface-800/50"
-        :class="{ 'bg-primary-900/20 border-l-2 border-l-primary-500': selectedLayerId === layer.id, 'border-l-2 border-l-transparent': selectedLayerId !== layer.id }"
+        :class="{
+          'bg-primary-900/20 border-l-2 border-l-primary-500': selectedLayerId === layer.id && !isLayerLive(layer.id),
+          'bg-primary-900/20 border-l-2 border-l-red-500': selectedLayerId === layer.id && isLayerLive(layer.id),
+          'border-l-2 border-l-red-500': selectedLayerId !== layer.id && isLayerLive(layer.id),
+          'border-l-2 border-l-transparent': selectedLayerId !== layer.id && !isLayerLive(layer.id),
+        }"
         @click="emit('update:selectedLayerId', layer.id)"
       >
         <div class="flex items-center justify-between">
