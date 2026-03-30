@@ -112,8 +112,55 @@ async function onToggle(elementId: number) {
     } else {
       await api.takeElement(selectedWorkspaceId.value, selectedChannelId.value, elementId)
     }
-  } catch (err) {
+  } catch (err: any) {
+    if (err?.response?.status === 403) return
     console.error('Toggle failed:', err)
+  }
+}
+
+const layerFilterRef = ref<InstanceType<typeof OperatorLayerFilter> | null>(null)
+const elementGridRef = ref<InstanceType<typeof OperatorElementGrid> | null>(null)
+
+async function onToggleLock(layerId: number) {
+  if (!selectedWorkspaceId.value || !selectedChannelId.value) return
+  const layer = layers.value.find(l => l.id === layerId)
+  if (!layer) return
+  try {
+    const updated = await api.updateLayer(
+      selectedWorkspaceId.value,
+      selectedChannelId.value,
+      layerId,
+      { locked: !layer.locked }
+    )
+    const idx = layers.value.findIndex(l => l.id === layerId)
+    if (idx !== -1) {
+      layers.value[idx] = updated
+    }
+  } catch (err) {
+    console.error('Toggle lock failed:', err)
+  }
+}
+
+async function onClearAll() {
+  if (!selectedWorkspaceId.value || !selectedChannelId.value) return
+  try {
+    await api.clearAllElements(selectedWorkspaceId.value, selectedChannelId.value)
+    const lockedLiveLayerIds = layers.value
+      .filter(l => l.locked)
+      .filter(l => {
+        const layerState = channelState.value?.layers.find(ls => ls.layerId === l.id)
+        return layerState?.elements.some(el => el.visibility === 'visible' || el.visibility === 'entering')
+      })
+      .map(l => l.id)
+
+    if (lockedLiveLayerIds.length > 0) {
+      for (const id of lockedLiveLayerIds) {
+        layerFilterRef.value?.flashLock(id)
+      }
+      elementGridRef.value?.flashLockedElements(lockedLiveLayerIds)
+    }
+  } catch (err) {
+    console.error('Clear all failed:', err)
   }
 }
 
@@ -145,26 +192,31 @@ async function onUpdateElement(elementId: number, fields: { name?: string, confi
     <OperatorTopBar
       :workspaces="workspaces"
       :channels="channels"
+      :layers="layers"
       :selected-workspace-id="selectedWorkspaceId"
       :selected-channel-id="selectedChannelId"
       :ws-status="wsStatus"
       :channel-state="channelState"
       @update:selected-workspace-id="selectedWorkspaceId = $event"
       @update:selected-channel-id="selectedChannelId = $event"
+      @clear-all="onClearAll"
     />
 
     <div class="flex-1 flex overflow-hidden">
       <div class="w-56 border-r border-surface-700 bg-surface-900 shrink-0 overflow-hidden">
         <OperatorLayerFilter
+          ref="layerFilterRef"
           :layers="layers"
           :channel-state="channelState"
           :selected-layer-id="selectedLayerId"
           @update:selected-layer-id="selectedLayerId = $event"
+          @toggle-lock="onToggleLock"
         />
       </div>
 
       <div class="flex-1 overflow-hidden bg-surface-950">
         <OperatorElementGrid
+          ref="elementGridRef"
           :layers="layers"
           :elements="elements"
           :channel-state="channelState"
