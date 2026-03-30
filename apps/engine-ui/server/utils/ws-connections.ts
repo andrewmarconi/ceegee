@@ -28,3 +28,7 @@ export function broadcastToChannel(workspaceId: number, channelId: number, event
 export function getWsConnectionCount(): number {
   return connections.size;
 }
+
+export function getConnectedPeers(): any[] {
+  return Array.from(connections.values()).map(c => c.peer);
+}
