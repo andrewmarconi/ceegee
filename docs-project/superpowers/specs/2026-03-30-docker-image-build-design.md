@@ -13,6 +13,8 @@ Create a production-ready Docker image for the CeeGee application using a multi-
 - **Multi-stage build:** deps → build → runtime — keeps final image small, no source code or devDeps shipped
 - **Volume for data:** `/app/data` declared as a VOLUME for SQLite DB, uploaded assets, and cached fonts
 - **SQLite for now:** Database abstraction to PostgreSQL tracked separately (#45)
+- **Docker Hub target:** `andrew559labs/ceegee`
+- **Tagging scheme:** Version + git SHA + latest
 
 ## Dockerfile Stages
 
@@ -61,7 +63,7 @@ All persistent data lives under `/app/data`:
 
 Running the container:
 ```bash
-docker run -p 3000:3000 -v ceegee-data:/app/data ceegee:latest
+docker run -p 3000:3000 -v ceegee-data:/app/data andrew559labs/ceegee:latest
 ```
 
 ## .dockerignore
@@ -89,6 +91,41 @@ docs-project/
 ```
 
 Keeps the build context small and prevents leaking secrets or local data into the image.
+
+## Image Tagging
+
+**Docker Hub repository:** `andrew559labs/ceegee`
+
+Each build produces three tags:
+
+| Tag | Example | Purpose |
+|-----|---------|---------|
+| `<version>` | `andrew559labs/ceegee:1.0.0` | Immutable release version |
+| `<version>-<short-sha>` | `andrew559labs/ceegee:1.0.0-abc1234` | Pinpoints exact commit for debugging |
+| `latest` | `andrew559labs/ceegee:latest` | Rolling tag for convenience |
+
+The version is read from the root `package.json`. The short SHA is the first 7 characters of the git commit hash.
+
+**Build and push commands:**
+
+```bash
+# Build with all tags
+VERSION=$(node -p "require('./package.json').version")
+SHA=$(git rev-parse --short HEAD)
+
+docker build \
+  -t andrew559labs/ceegee:${VERSION} \
+  -t andrew559labs/ceegee:${VERSION}-${SHA} \
+  -t andrew559labs/ceegee:latest \
+  .
+
+# Push all tags
+docker push andrew559labs/ceegee:${VERSION}
+docker push andrew559labs/ceegee:${VERSION}-${SHA}
+docker push andrew559labs/ceegee:latest
+```
+
+A convenience script (`scripts/docker-build.sh`) wraps this for easy local use.
 
 ## Environment Variables
 
