@@ -26,12 +26,13 @@ function handleFiles(files: FileList | null) {
   error.value = null
   if (!files || files.length === 0) return
   for (let i = 0; i < files.length; i++) {
-    const validationError = validateFile(files[i])
+    const file = files[i]!
+    const validationError = validateFile(file)
     if (validationError) {
       error.value = validationError
       return
     }
-    emit('upload', files[i])
+    emit('upload', file)
   }
 }
 

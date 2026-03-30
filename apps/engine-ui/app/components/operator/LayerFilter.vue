@@ -9,6 +9,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   'update:selectedLayerId': [value: number | null]
+  'toggle-lock': [layerId: number]
 }>()
 
 const sortedLayers = computed(() =>
@@ -24,9 +25,16 @@ function isLayerLive(layerId: number): boolean {
   return layer.elements.some(el => el.visibility === 'visible' || el.visibility === 'entering')
 }
 
-const liveLayerCount = computed(() =>
-  props.layers.filter(l => isLayerLive(l.id)).length
-)
+const flashingLayers = ref<Set<number>>(new Set())
+
+function flashLock(layerId: number) {
+  flashingLayers.value.add(layerId)
+  setTimeout(() => {
+    flashingLayers.value.delete(layerId)
+  }, 400)
+}
+
+defineExpose({ flashLock })
 </script>
 
 <template>
@@ -51,25 +59,41 @@ const liveLayerCount = computed(() =>
         v-for="layer in sortedLayers"
         :key="layer.id"
         class="w-full text-left px-3 py-3 border-b border-surface-800 transition-colors hover:bg-surface-800/50"
-        :class="{ 'bg-primary-900/20 border-l-2 border-l-primary-500': selectedLayerId === layer.id, 'border-l-2 border-l-transparent': selectedLayerId !== layer.id }"
+        :class="{
+          'bg-primary-900/20 border-l-2 border-l-primary-500': selectedLayerId === layer.id && !isLayerLive(layer.id),
+          'bg-primary-900/20 border-l-2 border-l-red-500': selectedLayerId === layer.id && isLayerLive(layer.id),
+          'border-l-2 border-l-red-500': selectedLayerId !== layer.id && isLayerLive(layer.id),
+          'border-l-2 border-l-transparent': selectedLayerId !== layer.id && !isLayerLive(layer.id)
+        }"
         @click="emit('update:selectedLayerId', layer.id)"
       >
-        <div class="flex items-center justify-between">
-          <span class="text-sm font-medium">{{ layer.name }}</span>
-          <Tag
-            v-if="isLayerLive(layer.id)"
-            severity="danger"
-            class="text-xs"
-          >
-            ON AIR
-          </Tag>
-          <Tag
-            v-else
-            severity="secondary"
-            class="text-xs"
-          >
-            READY
-          </Tag>
+        <div class="flex items-center justify-between gap-2">
+          <span class="text-sm font-medium truncate">{{ layer.name }}</span>
+          <div class="flex items-center gap-1.5 shrink-0">
+            <i
+              :class="[
+                layer.locked ? 'pi pi-lock' : 'pi pi-lock-open',
+                layer.locked ? 'text-surface-300' : 'text-surface-500',
+                flashingLayers.has(layer.id) ? 'lock-flash' : ''
+              ]"
+              class="text-xs cursor-pointer hover:text-white transition-colors"
+              @click.stop="emit('toggle-lock', layer.id)"
+            />
+            <Tag
+              v-if="isLayerLive(layer.id)"
+              severity="danger"
+              class="text-xs"
+            >
+              ON AIR
+            </Tag>
+            <Tag
+              v-else
+              severity="secondary"
+              class="text-xs"
+            >
+              READY
+            </Tag>
+          </div>
         </div>
       </button>
     </div>

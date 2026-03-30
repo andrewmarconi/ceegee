@@ -47,21 +47,13 @@ function getElementVisibility(): ElementVisibility {
 
 const visibility = computed(() => getElementVisibility())
 
-const stateLabel = computed(() => {
-  switch (visibility.value) {
-    case 'visible': return 'Live (On Air)'
-    case 'entering': return 'Entering'
-    case 'exiting': return 'Exiting'
-    default: return 'Ready'
-  }
-})
+const { statusLabel: stateLabel, statusSeverity: stateSeverity } = useVisibilityStyle(visibility)
 
-const stateSeverity = computed(() => {
-  switch (visibility.value) {
-    case 'visible': case 'entering': return 'danger' as const
-    case 'exiting': return 'warn' as const
-    default: return 'success' as const
-  }
+const isAnythingOnAir = computed(() => {
+  if (!props.channelState) return false
+  return props.channelState.layers.some(layer =>
+    layer.elements.some(el => el.visibility === 'visible' || el.visibility === 'entering')
+  )
 })
 
 const channelPreviewUrl = computed(() => {
@@ -153,7 +145,8 @@ function saveChanges() {
       </p>
       <div
         ref="previewContainer"
-        class="relative w-full bg-black rounded overflow-hidden"
+        class="relative w-full bg-black rounded overflow-hidden border-t-2"
+        :class="isAnythingOnAir ? 'border-t-red-500' : 'border-t-transparent'"
         :style="{ aspectRatio: `${outputWidth} / ${outputHeight}` }"
       >
         <iframe
@@ -162,7 +155,7 @@ function saveChanges() {
           :style="{
             width: `${outputWidth}px`,
             height: `${outputHeight}px`,
-            transform: `scale(${previewScale})`,
+            transform: `scale(${previewScale})`
           }"
           scrolling="no"
           sandbox="allow-scripts allow-same-origin"
@@ -223,14 +216,14 @@ function saveChanges() {
             :placeholder="field.label"
             :rows="3"
             fluid
-            @update:model-value="(val: string) => onConfigFieldInput(field.key, val)"
+            @update:model-value="(val: string | undefined) => onConfigFieldInput(field.key, val ?? '')"
           />
           <InputText
             v-else
             :model-value="String(editConfig[field.key] ?? '')"
             :placeholder="field.label"
             fluid
-            @update:model-value="(val: string) => onConfigFieldInput(field.key, val)"
+            @update:model-value="(val: string | undefined) => onConfigFieldInput(field.key, val ?? '')"
           />
         </div>
 

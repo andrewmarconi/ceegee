@@ -13,8 +13,8 @@ const showCreateModal = ref(false)
 const editingWorkspace = ref<Workspace | null>(null)
 const showDeleteConfirm = ref<WorkspaceId | null>(null)
 
-const createFormRef = ref<InstanceType<typeof WorkspaceForm>>()
-const editFormRef = ref<InstanceType<typeof WorkspaceForm>>()
+const createFormRef = ref<{ setFontError: (token: string, msg: string) => void, clearFontErrors: () => void }>()
+const editFormRef = ref<{ setFontError: (token: string, msg: string) => void, clearFontErrors: () => void }>()
 
 onMounted(async () => {
   try {
@@ -39,7 +39,7 @@ async function handleCreate(data: { name: string, description: string, themeToke
     toast.add({ summary: `Workspace "${ws.name}" created`, severity: 'success', life: 3000 })
   } catch (err: unknown) {
     if (err && typeof err === 'object' && 'data' in err) {
-      const errData = (err as any).data?.data
+      const errData = (err as { data?: { data?: { token?: string, family?: string } } }).data?.data
       if (errData?.token && errData?.family) {
         createFormRef.value?.setFontError(errData.token, `Font '${errData.family}' not found on Google Fonts`)
         return
@@ -64,7 +64,7 @@ async function handleUpdate(data: { name: string, description: string, themeToke
     toast.add({ summary: 'Workspace updated', severity: 'success', life: 3000 })
   } catch (err: unknown) {
     if (err && typeof err === 'object' && 'data' in err) {
-      const errData = (err as any).data?.data
+      const errData = (err as { data?: { data?: { token?: string, family?: string } } }).data?.data
       if (errData?.token && errData?.family) {
         editFormRef.value?.setFontError(errData.token, `Font '${errData.family}' not found on Google Fonts`)
         return

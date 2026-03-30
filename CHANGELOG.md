@@ -1,0 +1,141 @@
+# Changelog
+
+## v1.0.0 (2026-03-30)
+
+### Features
+- feat: add interactive release pipeline script (#44)
+- feat: add docker-build.sh with multi-platform and Docker Hub push support (#43)
+- feat: add multi-stage Dockerfile for production builds (#43)
+- feat(operator): wire lastHeartbeat prop to TopBar (#11)
+- feat(operator): replace WS status tag with traffic-light dot (#11)
+- feat(operator): add CSS animations for WS connection status dot (#11)
+- feat(ws): add reconnecting state, staleness watchdog, and heartbeat ref (#11)
+- feat(ws): add server-side heartbeat ping every 15s (#11)
+- feat(operator): wire lock toggle, clear-all, and flash feedback in operator page (#40)
+- feat(operator): add Clear All button to TopBar (#40)
+- feat(operator): grey out locked layer elements with flash feedback in ElementGrid (#40)
+- feat(operator): add lock toggle to LayerFilter (#40)
+- feat(operator): add lock-flash CSS animation (#40)
+- feat(api): add clearAllElements and updateLayer to useEngineApi (#40)
+- feat(api): add lock enforcement to take/clear/action and create clear-all route (#40)
+- feat(core): enforce layer locks in take/clear/action and add clearAll (#40)
+- feat(core): add locked column to layers table (#40)
+- feat(operator): add glow effect to TopBar On Air badge (#39)
+- feat(operator): unify ContextPanel status colors and add on-air preview border (#39)
+- feat(operator): unify LayerFilter status colors with red/neutral scheme (#39)
+- feat(operator): apply broadcast-switcher color-coding to ElementGrid (#39)
+- feat(operator): add useVisibilityStyle composable (#39)
+- feat(operator): add CSS keyframe animations for status color-coding (#39)
+- feat(ui): normalize header bar with breadcrumbs and cross-page navigation
+- feat(fonts): label font fields as Google Fonts in WorkspaceForm (#20)
+- feat(fonts): display font validation errors in WorkspaceForm (#20)
+- feat(fonts): inject @font-face declarations in OverlayHost (#20)
+- feat(fonts): validate and resolve fonts on workspace create (#20)
+- feat(fonts): validate and resolve fonts in workspace API (#20)
+- feat(fonts): add font file serving route (#20)
+- feat(fonts): add public font orchestration API (#20)
+- feat(fonts): add Google Fonts client with tests (#20)
+- feat(fonts): add font cache manager with tests (#20)
+- feat(fonts): add ResolvedFont type (#20)
+- feat(fonts): add font family parser with tests (#20)
+- feat: billboard backgrounds, asset picker, overlay fixes, docs restructure
+- feat: tabbed WorkspaceForm with theme token editors
+- feat: add themeTokens to billboard/bug manifests and registration plugin
+- feat: add ThemeTokenDef type and wire themeTokens through module CRUD
+- feat: flesh out docs homepage and force dark mode
+- feat: redesign operator page — LayerFilter, ElementGrid, channel preview
+- feat: add workspace dashboard at /app with CRUD
+- feat(producer): add Structure page, Assets page, and asset components
+- feat(producer): add Channel, Layer, Element, ConfigForm components
+- feat(producer): add useProducerApi composable for producer CRUD
+- feat(operator): add operator page with three-pane layout and WS wiring
+- feat(operator): add TopBar, Rundown, LayerDashboard, ContextPanel components
+- feat(operator): add useEngineApi composable, upgrade useEngineWs with subscribe/disconnect
+- feat(engine-ui): add overlay system — composables, layouts, OverlayHost, overlay pages
+- feat(engine-ui): add module auto-registration plugin and /api/modules route
+- feat(modules): add packages/modules with 5 built-in modules
+- feat(engine-core): add ModuleManifest and ModuleComponentProps types
+- feat(engine-ui): add WebSocket handler with subscribe and state:init
+- feat(engine-ui): add assets API routes with file upload and serving
+- feat(engine-ui): add engine control (take/clear/action) and health API routes
+- feat(engine-ui): add layers and elements API routes
+- feat(engine-ui): add workspaces and channels API routes
+- feat(engine-ui): add Nitro setup with DB singleton and WS connection registry
+- feat(engine-core): add engine state manager (buildChannelState, take, clear, action) with tests
+- feat(engine-core): add ChannelState, LayerState, and EngineEvent types
+- feat(engine-core): add runtime state repository with tests
+- feat(engine-core): add assets repository with tests
+- feat(engine-core): add elements repository with tests
+- feat(engine-core): add modules repository with upsert and tests
+- feat(engine-core): add layers repository with tests
+- feat(engine-core): add channels repository with tests
+- feat(engine-core): add workspaces repository with tests
+- feat(engine-core): add domain types and input types
+- feat(engine-core): add database connection factory and test helpers
+- feat(engine-core): add drizzle schema for all MVP tables
+
+### Bug Fixes
+- fix: resolve all ESLint errors and TypeScript type-check failures
+- fix: flatten docs structure so VuePress finds config
+- fix: add packageManager to root package.json for CI
+- fix: specify pnpm version in docs package.json for CI
+- fix: opt into Node.js 24 for GitHub Actions
+- fix: replace Divider with span in AppHeader, transparent overlay background
+- fix: broadcast state after element update, refetch overlay config on changes
+- fix: reset heading margins (no preflight means browser defaults apply)
+- fix: even card padding, flush indicator bar to button edge
+- fix: reduce top padding in layer card
+- fix: add outline border back to layer sections in ElementGrid
+- fix: use plain text layer headers and responsive 2/3/4 column grid
+- fix: compact layer headers, larger element buttons in ElementGrid
+- fix: remove on-air count from All Layers button in LayerFilter
+- fix: Tailwind as utility-only layer, add PrimeIcons, fix dark mode button visibility
+- fix: align Tailwind dark variant with PrimeVue p-dark selector, add overlay URL copy button
+- fix(modules): separate server-safe manifests from client-side Vue imports
+- fix(engine-core): add existence checks to all update functions
+- fix(engine-core): make migrations folder configurable, add Plan 2 doc
+
+### Other
+- docs: add implementation plan for automated release pipeline (#44)
+- docs: add design spec for automated release pipeline (#44)
+- chore: add version field to root package.json (#43)
+- chore: add .dockerignore (#43)
+- docs: add implementation plan for Docker image build process (#43)
+- docs: add image tagging and Docker Hub deployment to Docker spec (#43)
+- docs: add design spec for Docker image build process (#43)
+- docs: add implementation plan for WebSocket reconnection and heartbeat (#11)
+- docs: add design spec for WebSocket reconnection and heartbeat (#11)
+- docs: add implementation plan for operator safety guards (#40)
+- docs: add design spec for operator safety guards (#40)
+- docs: add implementation plan for operator status color-coding (#39)
+- docs: add design spec for operator status color-coding (#39)
+- chore: add sample workspace assets (test images)
+- chore: add .worktrees to .gitignore
+- docs: add implementation plan for dynamic Google Fonts loading (#20)
+- docs: add design spec for dynamic Google Fonts loading (#20)
+- docs: add VuePress site with GitHub Pages deployment
+- docs: add developer and user documentation, reorganize docs structure
+- chore: disable CI workflow for now
+- docs: add operator redesign implementation plan
+- docs: update operator redesign spec — hide All Layers when single layer
+- docs: add operator page redesign spec
+- chore: add Tailwind CSS as utility layer alongside PrimeVue components
+- chore: remove @nuxt/ui, complete PrimeVue migration
+- refactor: migrate layouts, landing page, and app config to PrimeVue
+- refactor: migrate pages to PrimeVue (toast API + component swap)
+- refactor: migrate operator components to PrimeVue
+- refactor: migrate list and panel components to PrimeVue
+- refactor: migrate all form components to PrimeVue
+- chore: configure PrimeVue infrastructure — dark mode, Toast, iconify
+- docs: add Nuxt UI to PrimeVue migration implementation plan
+- docs: add Nuxt UI to PrimeVue migration spec
+- docs: add root README with social image
+- chore: customize branding — sky theme, dark mode, updated logo, remove GitHub link from AppHeader
+- refactor: add marketing layout for landing page, separate from app pages
+- refactor: merge layout header and page toolbars into AppHeader component
+- docs: add Plan 5 (producer UI) doc
+- docs: add Plan 4 (operator UI) doc, update default layout
+- docs: update PRD for Nuxt 4 paths, fix ElementRuntimeState type, add implementation plan
+- chore: scaffold engine-core package with vitest and drizzle
+- chore: set up root monorepo with pnpm workspaces
+

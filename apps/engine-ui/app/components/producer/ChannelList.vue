@@ -2,7 +2,7 @@
 import { Icon } from '@iconify/vue'
 import type { Channel, ChannelId } from 'engine-core'
 
-const props = defineProps<{
+defineProps<{
   channels: Channel[]
   selectedId: ChannelId | null
   loading?: boolean

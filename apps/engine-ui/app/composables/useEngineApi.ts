@@ -11,27 +11,27 @@ import type {
 
 export function useEngineApi() {
   function listWorkspaces(): Promise<Workspace[]> {
-    return $fetch('/api/workspaces')
+    return $fetch<Workspace[]>('/api/workspaces')
   }
 
   function getWorkspace(workspaceId: number): Promise<Workspace> {
-    return $fetch(`/api/workspaces/${workspaceId}`)
+    return $fetch<Workspace>(`/api/workspaces/${workspaceId}`)
   }
 
   function listChannels(workspaceId: number): Promise<Channel[]> {
-    return $fetch(`/api/workspaces/${workspaceId}/channels`)
+    return $fetch<Channel[]>(`/api/workspaces/${workspaceId}/channels`)
   }
 
   function listLayers(workspaceId: number, channelId: number): Promise<Layer[]> {
-    return $fetch(`/api/workspaces/${workspaceId}/channels/${channelId}/layers`)
+    return $fetch<Layer[]>(`/api/workspaces/${workspaceId}/channels/${channelId}/layers`)
   }
 
   function listElements(workspaceId: number, channelId: number): Promise<Element[]> {
-    return $fetch(`/api/workspaces/${workspaceId}/channels/${channelId}/elements`)
+    return $fetch<Element[]>(`/api/workspaces/${workspaceId}/channels/${channelId}/elements`)
   }
 
   function listModules(): Promise<ModuleRecord[]> {
-    return $fetch('/api/modules')
+    return $fetch<ModuleRecord[]>('/api/modules')
   }
 
   function updateElement(
@@ -40,7 +40,7 @@ export function useEngineApi() {
     elementId: number,
     input: UpdateElementInput
   ): Promise<Element> {
-    return $fetch(
+    return $fetch<Element>(
       `/api/workspaces/${workspaceId}/channels/${channelId}/elements/${elementId}`,
       { method: 'PUT', body: input }
     )
@@ -51,7 +51,7 @@ export function useEngineApi() {
     channelId: number,
     elementId: number
   ): Promise<ChannelState> {
-    return $fetch(
+    return $fetch<ChannelState>(
       `/api/workspaces/${workspaceId}/channels/${channelId}/elements/${elementId}/take`,
       { method: 'POST' }
     )
@@ -62,9 +62,31 @@ export function useEngineApi() {
     channelId: number,
     elementId: number
   ): Promise<ChannelState> {
-    return $fetch(
+    return $fetch<ChannelState>(
       `/api/workspaces/${workspaceId}/channels/${channelId}/elements/${elementId}/clear`,
       { method: 'POST' }
+    )
+  }
+
+  function clearAllElements(
+    workspaceId: number,
+    channelId: number
+  ): Promise<ChannelState> {
+    return $fetch<ChannelState>(
+      `/api/workspaces/${workspaceId}/channels/${channelId}/clear-all`,
+      { method: 'POST' }
+    )
+  }
+
+  function updateLayer(
+    workspaceId: number,
+    channelId: number,
+    layerId: number,
+    input: { locked?: boolean, name?: string, zIndex?: number }
+  ): Promise<Layer> {
+    return $fetch<Layer>(
+      `/api/workspaces/${workspaceId}/channels/${channelId}/layers/${layerId}`,
+      { method: 'PUT', body: input }
     )
   }
 
@@ -75,7 +97,7 @@ export function useEngineApi() {
     actionId: string,
     args?: unknown
   ): Promise<EngineEvent> {
-    return $fetch(
+    return $fetch<EngineEvent>(
       `/api/workspaces/${workspaceId}/channels/${channelId}/elements/${elementId}/action`,
       { method: 'POST', body: { actionId, args } }
     )
@@ -91,6 +113,8 @@ export function useEngineApi() {
     updateElement,
     takeElement,
     clearElement,
+    clearAllElements,
+    updateLayer,
     elementAction
   }
 }

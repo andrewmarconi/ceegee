@@ -84,6 +84,7 @@ export type Layer = {
   name: string;
   zIndex: number;
   region: LayerRegion | null;
+  locked: boolean;
   createdAt: IsoDateTime;
   updatedAt: IsoDateTime;
 };
@@ -96,7 +97,9 @@ export type CreateLayerInput = {
   region?: LayerRegion | null;
 };
 
-export type UpdateLayerInput = Partial<Omit<CreateLayerInput, 'workspaceId' | 'channelId'>>;
+export type UpdateLayerInput = Partial<Omit<CreateLayerInput, 'workspaceId' | 'channelId'>> & {
+  locked?: boolean;
+};
 
 // -- Module --
 

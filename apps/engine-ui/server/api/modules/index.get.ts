@@ -1,5 +1,5 @@
-import { listModules } from 'engine-core';
+import { listModules } from 'engine-core'
 
 export default defineEventHandler(() => {
-  return listModules(useDb());
-});
+  return listModules(useDb())
+})
