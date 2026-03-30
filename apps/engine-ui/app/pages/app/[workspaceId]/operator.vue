@@ -7,7 +7,7 @@ definePageMeta({
 
 const route = useRoute()
 const api = useEngineApi()
-const { channelState, status: wsStatus, subscribe, disconnect } = useEngineWs()
+const { channelState, status: wsStatus, lastHeartbeat, subscribe, disconnect } = useEngineWs()
 
 const workspaces = ref<Workspace[]>([])
 const channels = ref<Channel[]>([])
@@ -196,6 +196,7 @@ async function onUpdateElement(elementId: number, fields: { name?: string, confi
       :selected-workspace-id="selectedWorkspaceId"
       :selected-channel-id="selectedChannelId"
       :ws-status="wsStatus"
+      :last-heartbeat="lastHeartbeat"
       :channel-state="channelState"
       @update:selected-workspace-id="selectedWorkspaceId = $event"
       @update:selected-channel-id="selectedChannelId = $event"
