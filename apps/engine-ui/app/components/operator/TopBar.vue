@@ -9,6 +9,7 @@ const props = defineProps<{
   selectedWorkspaceId: number | null
   selectedChannelId: number | null
   wsStatus: WsConnectionStatus
+  lastHeartbeat: number
   channelState: ChannelState | null
 }>()
 
@@ -49,22 +50,36 @@ const hasUnlockedOnAir = computed(() => {
   )
 })
 
-const wsStatusSeverity = computed(() => {
+const wsStatusTooltip = computed(() => {
   switch (props.wsStatus) {
-    case 'connected': return 'success' as const
-    case 'connecting': return 'warn' as const
-    case 'disconnected': return 'danger' as const
-    default: return 'secondary' as const
+    case 'connected': return 'Connected to Server'
+    case 'connecting': return 'Connecting to Server'
+    case 'reconnecting': return 'Reconnecting to Server'
+    case 'disconnected': return 'Disconnected from Server'
+    default: return 'Unknown'
   }
 })
 
-const wsStatusLabel = computed(() => {
+const wsDotClass = computed(() => {
   switch (props.wsStatus) {
-    case 'connected': return 'Connected'
-    case 'connecting': return 'Connecting...'
-    case 'disconnected': return 'Disconnected'
-    default: return 'Unknown'
+    case 'connected': return 'ws-dot-connected'
+    case 'connecting': return 'ws-dot-connecting'
+    case 'reconnecting': return 'ws-dot-reconnecting'
+    case 'disconnected': return 'ws-dot-disconnected'
+    default: return 'ws-dot-disconnected'
   }
+})
+
+const isHeartbeatFlashing = ref(false)
+let heartbeatTimeout: ReturnType<typeof setTimeout> | null = null
+
+watch(() => props.lastHeartbeat, () => {
+  if (props.lastHeartbeat === 0) return
+  isHeartbeatFlashing.value = true
+  if (heartbeatTimeout) clearTimeout(heartbeatTimeout)
+  heartbeatTimeout = setTimeout(() => {
+    isHeartbeatFlashing.value = false
+  }, 150)
 })
 
 const toast = useToast()
@@ -121,20 +136,11 @@ async function copyOverlayUrl() {
       @click="copyOverlayUrl"
     />
 
-    <Tag
-      :severity="wsStatusSeverity"
-      class="gap-1.5"
-    >
-      <span
-        class="size-2 rounded-full"
-        :class="{
-          'bg-green-500': wsStatus === 'connected',
-          'bg-yellow-500 animate-pulse': wsStatus === 'connecting',
-          'bg-red-500': wsStatus === 'disconnected'
-        }"
-      />
-      {{ wsStatusLabel }}
-    </Tag>
+    <span
+      v-tooltip.bottom="wsStatusTooltip"
+      class="size-2.5 rounded-full shrink-0 cursor-default"
+      :class="[wsDotClass, isHeartbeatFlashing ? 'ws-dot-heartbeat' : '']"
+    />
 
     <Button
       label="Clear All"
