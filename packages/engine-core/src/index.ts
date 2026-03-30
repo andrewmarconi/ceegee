@@ -535,4 +535,4 @@ export function clearRuntimeState(db: AppDatabase, elementId: ElementId): void {
 }
 
 // Engine state
-export { buildChannelState, take, clear, elementAction } from './engine';
+export { buildChannelState, take, clear, clearAll, elementAction } from './engine';

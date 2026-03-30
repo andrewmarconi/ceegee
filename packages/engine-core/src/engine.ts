@@ -14,6 +14,7 @@ import {
   listElementsByChannel,
   listRuntimeStateByChannel,
   getElement,
+  getLayer,
   setRuntimeState,
   getRuntimeState,
 } from './index';
@@ -53,6 +54,9 @@ export function take(
   const element = getElement(db, elementId);
   if (!element) throw new Error(`Element ${elementId} not found`);
 
+  const layer = getLayer(db, element.layerId);
+  if (layer?.locked) throw new Error('Layer is locked');
+
   // Hide any currently visible element on the same layer
   const currentStates = listRuntimeStateByChannel(db, element.channelId);
   const allElements = listElementsByChannel(db, element.channelId);
@@ -79,6 +83,9 @@ export function clear(
   const element = getElement(db, elementId);
   if (!element) throw new Error(`Element ${elementId} not found`);
 
+  const layer = getLayer(db, element.layerId);
+  if (layer?.locked) throw new Error('Layer is locked');
+
   setRuntimeState(db, { elementId, visibility: 'hidden' });
 
   return buildChannelState(db, element.workspaceId, element.channelId);
@@ -92,6 +99,9 @@ export function elementAction(
 ): EngineEvent {
   const element = getElement(db, elementId);
   if (!element) throw new Error(`Element ${elementId} not found`);
+
+  const actionLayer = getLayer(db, element.layerId);
+  if (actionLayer?.locked) throw new Error('Layer is locked');
 
   const existing = getRuntimeState(db, elementId);
   setRuntimeState(db, {
@@ -110,4 +120,26 @@ export function elementAction(
       args,
     },
   };
+}
+
+export function clearAll(
+  db: AppDatabase,
+  workspaceId: WorkspaceId,
+  channelId: ChannelId,
+): ChannelState {
+  const allLayers = listLayers(db, channelId);
+  const lockedLayerIds = new Set(allLayers.filter(l => l.locked).map(l => l.id));
+  const allElements = listElementsByChannel(db, channelId);
+  const allStates = listRuntimeStateByChannel(db, channelId);
+
+  for (const rs of allStates) {
+    if (rs.visibility === 'visible' || rs.visibility === 'entering') {
+      const element = allElements.find(e => e.id === rs.elementId);
+      if (element && !lockedLayerIds.has(element.layerId)) {
+        setRuntimeState(db, { elementId: rs.elementId, visibility: 'hidden' });
+      }
+    }
+  }
+
+  return buildChannelState(db, workspaceId, channelId);
 }
