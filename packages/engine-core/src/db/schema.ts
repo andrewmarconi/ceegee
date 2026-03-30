@@ -51,6 +51,7 @@ export const layers = sqliteTable('layers', {
   name: text('name').notNull(),
   zIndex: integer('z_index').notNull(),
   region: text('region'),
+  locked: integer('locked').notNull().default(0),
 
   createdAt: text('created_at').notNull(),
   updatedAt: text('updated_at').notNull(),

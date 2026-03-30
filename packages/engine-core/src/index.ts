@@ -212,6 +212,7 @@ function layerRowToDomain(row: LayerRow): Layer {
     name: row.name,
     zIndex: row.zIndex,
     region: (row.region as Layer['region']) ?? null,
+    locked: row.locked === 1,
     createdAt: row.createdAt,
     updatedAt: row.updatedAt,
   };
@@ -250,6 +251,7 @@ export function updateLayer(db: AppDatabase, id: LayerId, input: UpdateLayerInpu
   if (input.name !== undefined) values.name = input.name;
   if (input.zIndex !== undefined) values.zIndex = input.zIndex;
   if (input.region !== undefined) values.region = input.region;
+  if (input.locked !== undefined) values.locked = input.locked ? 1 : 0;
   db.update(layers).set(values).where(eq(layers.id, id)).run();
   return getLayer(db, id)!;
 }

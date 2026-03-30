@@ -15,6 +15,13 @@
       "when": 1774724237849,
       "tag": "0001_serious_wild_child",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1774835852737,
+      "tag": "0002_lovely_squirrel_girl",
+      "breakpoints": true
     }
   ]
 }
