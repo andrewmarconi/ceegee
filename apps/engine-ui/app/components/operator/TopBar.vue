@@ -129,6 +129,7 @@ async function copyOverlayUrl() {
       v-if="isOnAir"
       severity="danger"
       class="uppercase font-bold tracking-wider animate-pulse"
+      :style="{ boxShadow: '0 0 8px oklch(0.637 0.237 25.331 / 0.5)' }"
     >
       On Air
     </Tag>
