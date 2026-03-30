@@ -47,6 +47,37 @@ function getIsLive(elementId: number): boolean {
   const { isLive } = useVisibilityStyle(() => getElementVisibility(elementId))
   return isLive.value
 }
+
+function isLayerLocked(layerId: number): boolean {
+  return props.layers.find(l => l.id === layerId)?.locked ?? false
+}
+
+const flashingElements = ref<Set<number>>(new Set())
+
+function onElementClick(element: Element) {
+  if (isLayerLocked(element.layerId)) {
+    flashingElements.value.add(element.id)
+    setTimeout(() => {
+      flashingElements.value.delete(element.id)
+    }, 400)
+    return
+  }
+  emit('toggle', element.id)
+}
+
+function flashLockedElements(layerIds: number[]) {
+  const lockedIds = new Set(layerIds)
+  for (const el of props.elements) {
+    if (lockedIds.has(el.layerId) && getIsLive(el.id)) {
+      flashingElements.value.add(el.id)
+    }
+  }
+  setTimeout(() => {
+    flashingElements.value.clear()
+  }, 400)
+}
+
+defineExpose({ flashLockedElements })
 </script>
 
 <template>
@@ -80,18 +111,28 @@ function getIsLive(elementId: number): boolean {
           :key="element.id"
           class="relative flex items-center rounded-md border overflow-hidden transition-all group"
           :class="[
-            getStatusClass(element.id),
-            getIsLive(element.id)
+            isLayerLocked(element.layerId) ? 'status-hidden opacity-50 cursor-not-allowed' : getStatusClass(element.id),
+            !isLayerLocked(element.layerId) && getIsLive(element.id)
               ? 'hover:brightness-110'
-              : 'hover:border-surface-500'
+              : '',
+            !isLayerLocked(element.layerId) && !getIsLive(element.id)
+              ? 'hover:border-surface-500'
+              : ''
           ]"
-          @click="emit('toggle', element.id)"
+          @click="onElementClick(element)"
         >
           <span class="flex-1 px-4 py-4 text-sm font-medium text-left truncate">
             {{ element.name }}
           </span>
 
+          <i
+            v-if="isLayerLocked(element.layerId)"
+            class="pi pi-lock text-xs text-surface-400 mr-3"
+            :class="flashingElements.has(element.id) ? 'lock-flash' : ''"
+          />
+
           <button
+            v-else
             class="absolute right-2 p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/20"
             title="Edit element"
             @click.stop="emit('edit', element.id)"
