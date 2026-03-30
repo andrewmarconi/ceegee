@@ -59,3 +59,42 @@ body {
 code, pre {
   font-family: 'Atkinson Hyperlegible Mono', monospace;
 }
+
+/* -- Operator status color-coding -- */
+
+@keyframes status-entering {
+  0% { opacity: 0.4; }
+  100% { opacity: 1; }
+}
+
+@keyframes status-exiting {
+  0% { opacity: 1; box-shadow: 0 0 8px oklch(0.637 0.237 25.331 / 0.5); }
+  100% { opacity: 0.6; box-shadow: 0 0 0px oklch(0.637 0.237 25.331 / 0); }
+}
+
+.status-visible {
+  background-color: oklch(0.637 0.237 25.331);
+  border-color: oklch(0.704 0.191 22.216);
+  color: white;
+  box-shadow: 0 0 8px oklch(0.637 0.237 25.331 / 0.5);
+}
+
+.status-entering {
+  background-color: oklch(0.637 0.237 25.331 / 0.6);
+  border-color: oklch(0.704 0.191 22.216);
+  color: white;
+  animation: status-entering 1s ease-in-out infinite alternate;
+}
+
+.status-exiting {
+  background-color: oklch(0.637 0.237 25.331 / 0.4);
+  border-color: var(--color-surface-600);
+  color: var(--color-surface-200);
+  animation: status-exiting 1s ease-in-out forwards;
+}
+
+.status-hidden {
+  background-color: var(--color-surface-800);
+  border-color: var(--color-surface-600);
+  color: var(--color-surface-300);
+}
