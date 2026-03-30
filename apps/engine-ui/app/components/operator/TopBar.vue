@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import type { Workspace, Channel, ChannelState } from 'engine-core'
+import type { Workspace, Channel, Layer, ChannelState } from 'engine-core'
 import type { WsConnectionStatus } from '~/composables/useEngineWs'
 
 const props = defineProps<{
   workspaces: Workspace[]
   channels: Channel[]
+  layers: Layer[]
   selectedWorkspaceId: number | null
   selectedChannelId: number | null
   wsStatus: WsConnectionStatus
@@ -14,6 +15,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   'update:selectedWorkspaceId': [value: number]
   'update:selectedChannelId': [value: number]
+  'clear-all': []
 }>()
 
 const selectedWorkspace = computed(() =>
@@ -34,6 +36,15 @@ const selectedChannelValue = computed({
 const isOnAir = computed(() => {
   if (!props.channelState) return false
   return props.channelState.layers.some(layer =>
+    layer.elements.some(el => el.visibility === 'visible' || el.visibility === 'entering')
+  )
+})
+
+const hasUnlockedOnAir = computed(() => {
+  if (!props.channelState) return false
+  const lockedLayerIds = new Set(props.layers.filter(l => l.locked).map(l => l.id))
+  return props.channelState.layers.some(layer =>
+    !lockedLayerIds.has(layer.layerId) &&
     layer.elements.some(el => el.visibility === 'visible' || el.visibility === 'entering')
   )
 })
@@ -124,6 +135,16 @@ async function copyOverlayUrl() {
       />
       {{ wsStatusLabel }}
     </Tag>
+
+    <Button
+      label="Clear All"
+      icon="pi pi-ban"
+      severity="danger"
+      text
+      size="small"
+      :disabled="!hasUnlockedOnAir"
+      @click="emit('clear-all')"
+    />
 
     <Tag
       v-if="isOnAir"
