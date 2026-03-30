@@ -38,9 +38,14 @@ function getElementVisibility(elementId: number): ElementVisibility {
   return 'hidden'
 }
 
-function isLive(elementId: number): boolean {
-  const vis = getElementVisibility(elementId)
-  return vis === 'visible' || vis === 'entering'
+function getStatusClass(elementId: number): string {
+  const { statusClass } = useVisibilityStyle(() => getElementVisibility(elementId))
+  return statusClass.value
+}
+
+function getIsLive(elementId: number): boolean {
+  const { isLive } = useVisibilityStyle(() => getElementVisibility(elementId))
+  return isLive.value
 }
 </script>
 
@@ -73,10 +78,13 @@ function isLive(elementId: number): boolean {
         <button
           v-for="element in elementsForLayer(layer.id)"
           :key="element.id"
-          class="relative flex items-center rounded-md border overflow-hidden transition-colors group"
-          :class="isLive(element.id)
-            ? 'bg-surface-800 border-red-500/40 hover:border-red-500/70'
-            : 'bg-surface-800 border-surface-600 hover:border-surface-500'"
+          class="relative flex items-center rounded-md border overflow-hidden transition-all group"
+          :class="[
+            getStatusClass(element.id),
+            getIsLive(element.id)
+              ? 'hover:brightness-110'
+              : 'hover:border-surface-500'
+          ]"
           @click="emit('toggle', element.id)"
         >
           <span class="flex-1 px-4 py-4 text-sm font-medium text-left truncate">
@@ -84,17 +92,12 @@ function isLive(elementId: number): boolean {
           </span>
 
           <button
-            class="absolute right-8 p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity hover:bg-surface-700"
+            class="absolute right-2 p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/20"
             title="Edit element"
             @click.stop="emit('edit', element.id)"
           >
-            <i class="pi pi-pencil text-xs text-surface-400" />
+            <i class="pi pi-pencil text-xs" />
           </button>
-
-          <div
-            class="absolute right-0 top-0 bottom-0 w-2"
-            :class="isLive(element.id) ? 'bg-red-500 animate-pulse' : 'bg-surface-600'"
-          />
         </button>
       </div>
     </div>
