@@ -7,3 +7,4 @@ dist/
 *.db-wal
 .DS_Store
 .worktrees/
+apps/engine-ui/data/**
