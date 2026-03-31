@@ -3,7 +3,9 @@
 # ============================================================
 FROM node:25-slim AS deps
 
-RUN corepack enable && corepack prepare pnpm@10.32.1 --activate
+# Install build tools for native addons (better-sqlite3) and pnpm
+RUN apt-get update && apt-get install -y python3 make g++ && rm -rf /var/lib/apt/lists/*
+RUN npm install -g pnpm@10.32.1
 
 WORKDIR /app
 
@@ -23,7 +25,7 @@ RUN pnpm install --frozen-lockfile
 # ============================================================
 FROM node:25-slim AS build
 
-RUN corepack enable && corepack prepare pnpm@10.32.1 --activate
+RUN npm install -g pnpm@10.32.1
 
 WORKDIR /app
 
@@ -43,6 +45,10 @@ RUN pnpm run build
 # Stage 3: Production runtime
 # ============================================================
 FROM node:25-slim AS runtime
+
+# Patch known vulnerabilities in base image packages and remove unused npm
+RUN apt-get update && apt-get upgrade -y && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /usr/local/lib/node_modules/npm /usr/local/bin/npm /usr/local/bin/npx
 
 WORKDIR /app
 
