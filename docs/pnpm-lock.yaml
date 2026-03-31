@@ -11,6 +11,9 @@ importers:
       '@vuepress/bundler-vite':
         specifier: 2.0.0-rc.26
         version: 2.0.0-rc.26(@types/node@25.5.0)(sass-embedded@1.98.0)(sass@1.98.0)(typescript@6.0.2)(yaml@2.8.3)
+      '@vuepress/plugin-llms':
+        specifier: 2.0.0-rc.126
+        version: 2.0.0-rc.126(@vuepress/bundler-vite@2.0.0-rc.26(@types/node@25.5.0)(sass-embedded@1.98.0)(sass@1.98.0)(typescript@6.0.2)(yaml@2.8.3))(typescript@6.0.2)(vuepress@2.0.0-rc.26(@vuepress/bundler-vite@2.0.0-rc.26(@types/node@25.5.0)(sass-embedded@1.98.0)(sass@1.98.0)(typescript@6.0.2)(yaml@2.8.3))(typescript@6.0.2)(vue@3.5.31(typescript@6.0.2)))
       '@vuepress/theme-default':
         specifier: 2.0.0-rc.126
         version: 2.0.0-rc.126(@vuepress/bundler-vite@2.0.0-rc.26(@types/node@25.5.0)(sass-embedded@1.98.0)(sass@1.98.0)(typescript@6.0.2)(yaml@2.8.3))(markdown-it@14.1.1)(sass-embedded@1.98.0)(sass@1.98.0)(typescript@6.0.2)(vuepress@2.0.0-rc.26(@vuepress/bundler-vite@2.0.0-rc.26(@types/node@25.5.0)(sass-embedded@1.98.0)(sass@1.98.0)(typescript@6.0.2)(yaml@2.8.3))(typescript@6.0.2)(vue@3.5.31(typescript@6.0.2)))
@@ -1196,6 +1199,11 @@ packages:
     resolution: {integrity: sha512-jXzVJan+MbvmyAZNsbInj3JCzZDTffZzvebmaM63pmYhmlumllrIbTgtVS0cBLcO8LTvccA53qOTe+eqnRhppw==}
     peerDependencies:
       vuepress: 2.0.0-rc.26
+
+  '@vuepress/plugin-llms@2.0.0-rc.126':
+    resolution: {integrity: sha512-41jNIeeOgBsIrbp6R1UBNh1GnPCD9Xr/LYXA10uVW6i5uYgIwM0/mD9ZIOuIUX8csD89IY+R80Cc0oc5E9k1rA==}
+    peerDependencies:
+      vuepress: 2.0.0-rc.27
 
   '@vuepress/plugin-markdown-chart@2.0.0-rc.123':
     resolution: {integrity: sha512-Ojq1ctSqkDFPGXYBSEnAEIj9EuPUB/c4LqTzUq764m9tJDJ99VEYL9qTWtA+6al9uVeuwTUZyZgxsy6IDR6WTA==}
@@ -3826,6 +3834,26 @@ snapshots:
       vuepress: 2.0.0-rc.26(@vuepress/bundler-vite@2.0.0-rc.26(@types/node@25.5.0)(sass-embedded@1.98.0)(sass@1.98.0)(typescript@6.0.2)(yaml@2.8.3))(typescript@6.0.2)(vue@3.5.31(typescript@6.0.2))
     transitivePeerDependencies:
       - '@75lb/nature'
+      - supports-color
+      - typescript
+
+  '@vuepress/plugin-llms@2.0.0-rc.126(@vuepress/bundler-vite@2.0.0-rc.26(@types/node@25.5.0)(sass-embedded@1.98.0)(sass@1.98.0)(typescript@6.0.2)(yaml@2.8.3))(typescript@6.0.2)(vuepress@2.0.0-rc.26(@vuepress/bundler-vite@2.0.0-rc.26(@types/node@25.5.0)(sass-embedded@1.98.0)(sass@1.98.0)(typescript@6.0.2)(yaml@2.8.3))(typescript@6.0.2)(vue@3.5.31(typescript@6.0.2)))':
+    dependencies:
+      '@types/mdast': 4.0.4
+      '@vuepress/helper': 2.0.0-rc.126(@vuepress/bundler-vite@2.0.0-rc.26(@types/node@25.5.0)(sass-embedded@1.98.0)(sass@1.98.0)(typescript@6.0.2)(yaml@2.8.3))(typescript@6.0.2)(vuepress@2.0.0-rc.26(@vuepress/bundler-vite@2.0.0-rc.26(@types/node@25.5.0)(sass-embedded@1.98.0)(sass@1.98.0)(typescript@6.0.2)(yaml@2.8.3))(typescript@6.0.2)(vue@3.5.31(typescript@6.0.2)))
+      byte-size: 9.0.1
+      gray-matter: 4.0.3
+      mdast-util-from-markdown: 2.0.3
+      millify: 6.1.0
+      remark: 15.0.1
+      tokenx: 1.3.0
+      unist-util-remove: 4.0.0
+      unist-util-visit: 5.1.0
+      vuepress: 2.0.0-rc.26(@vuepress/bundler-vite@2.0.0-rc.26(@types/node@25.5.0)(sass-embedded@1.98.0)(sass@1.98.0)(typescript@6.0.2)(yaml@2.8.3))(typescript@6.0.2)(vue@3.5.31(typescript@6.0.2))
+    transitivePeerDependencies:
+      - '@75lb/nature'
+      - '@vuepress/bundler-vite'
+      - '@vuepress/bundler-webpack'
       - supports-color
       - typescript
 

@@ -13,6 +13,7 @@
   },
   "devDependencies": {
     "@vuepress/bundler-vite": "2.0.0-rc.26",
+    "@vuepress/plugin-llms": "2.0.0-rc.126",
     "@vuepress/theme-default": "2.0.0-rc.126",
     "sass-embedded": "^1.98.0",
     "typescript": "^6.0.2",
