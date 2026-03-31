@@ -1,7 +1,7 @@
 # ============================================================
 # Stage 1: Install dependencies
 # ============================================================
-FROM node:22-slim AS deps
+FROM node:25-slim AS deps
 
 RUN corepack enable && corepack prepare pnpm@10.32.1 --activate
 
@@ -21,7 +21,7 @@ RUN pnpm install --frozen-lockfile
 # ============================================================
 # Stage 2: Build the application
 # ============================================================
-FROM node:22-slim AS build
+FROM node:25-slim AS build
 
 RUN corepack enable && corepack prepare pnpm@10.32.1 --activate
 
@@ -42,7 +42,7 @@ RUN pnpm run build
 # ============================================================
 # Stage 3: Production runtime
 # ============================================================
-FROM node:22-slim AS runtime
+FROM node:25-slim AS runtime
 
 WORKDIR /app
 
