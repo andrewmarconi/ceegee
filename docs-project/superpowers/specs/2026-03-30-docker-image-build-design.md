@@ -9,7 +9,7 @@ Create a production-ready Docker image for the CeeGee application using a multi-
 
 ## Design Decisions
 
-- **Base image:** `node:22-slim` (Debian) — reliable native module compilation for better-sqlite3
+- **Base image:** `node:25-slim` (Debian) — reliable native module compilation for better-sqlite3
 - **Multi-stage build:** deps → build → runtime — keeps final image small, no source code or devDeps shipped
 - **Volume for data:** `/app/data` declared as a VOLUME for SQLite DB, uploaded assets, and cached fonts
 - **SQLite for now:** Database abstraction to PostgreSQL tracked separately (#45)
@@ -20,9 +20,10 @@ Create a production-ready Docker image for the CeeGee application using a multi-
 
 ### Stage 1: deps
 
-Base: `node:22-slim`
+Base: `node:25-slim`
 
-- Install pnpm globally via corepack
+- Install build tools (python3, make, g++) for native addon compilation
+- Install pnpm globally via `npm install -g`
 - Copy workspace configuration: `package.json`, `pnpm-lock.yaml`, `pnpm-workspace.yaml`
 - Copy all `package.json` files from `apps/` and `packages/` (preserving directory structure)
 - Run `pnpm install --frozen-lockfile`
@@ -30,7 +31,7 @@ Base: `node:22-slim`
 
 ### Stage 2: build
 
-Base: `node:22-slim`
+Base: `node:25-slim`
 
 - Copy `node_modules` from deps stage
 - Copy full source code
@@ -38,8 +39,10 @@ Base: `node:22-slim`
 
 ### Stage 3: runtime
 
-Base: `node:22-slim`
+Base: `node:25-slim`
 
+- Patch OS-level vulnerabilities via `apt-get upgrade`
+- Remove unused npm/npx to eliminate bundled CVEs
 - Create a non-root user for security
 - Copy `apps/engine-ui/.output/` from build stage (Nitro bundles all JS dependencies)
 - Copy `packages/engine-core/drizzle/` from build stage (migration SQL files needed at startup)
